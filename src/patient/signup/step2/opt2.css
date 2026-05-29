@@ -1,0 +1,30 @@
+.optinFlex {
+    display:flex;
+    height: 90px;
+    gap:0.5rem;
+    justify-content: center;
+    margin-top: 1.2rem;
+}
+.otpInput {
+    display:inline-block;
+    height:80px;
+    width:5vw;
+    text-align: center;
+    font-size: 27px;
+    background-color: rgb(246, 246, 246);
+    border:1px solid rgb(225, 225, 225);
+    border-radius: 9px;
+}
+.otpInput:focus {
+    border:1px solid rgb(35, 35, 255);
+    outline-color: rgb(35, 35, 255);
+    outline-width: 3px;
+    transition: 0.2s;
+    box-shadow: 0 0 6px rgb(74, 74, 255);
+    color:rgb(74, 74, 255);
+}
+@media(max-width:1024px){
+    .otpInput {
+        width:8vw;
+    }
+}

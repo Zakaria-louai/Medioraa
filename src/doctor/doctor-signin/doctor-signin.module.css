@@ -1,0 +1,493 @@
+.errorText {
+  color: rgb(255, 65, 65) !important;
+}
+body {
+  background-color: var(--bg-color);
+  padding: 0;
+  margin: 0;
+}
+.contain {
+  width: 100vw;
+}
+.pageFlex {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+.leftFlex {
+  display: none;
+  position: relative;
+  padding: 0;
+  margin: 0;
+}
+@media (min-width: 1024px) {
+  .leftFlex {
+    display: flex;
+    width: 70%;
+  }
+}
+.gradientLay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  background: linear-gradient(
+    to top right,
+    rgba(33, 94, 237, 0.2),
+    transparent
+  );
+}
+.picLay {
+  width: 100%;
+  height: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAN7E_o27g12aWgPeTUNBY1UiEiVqqfJSWR9xme_Abo7MOxBGjx5tlBg6Q9mkgW28MgFooN9WHXR614TYvdSPImBOAqOw1Ucu6mVfj2Msx1Nw2JIjhvzNsMtLLY3KG98rDziarZv-gXCKH6EomJvTP9KUwhXxV8LePgMwNQ05tRG7awsmQnEfIjAAjp2rHFLI8FOJ2qjAFJOQbvPNnW8y89HW4_v6C_C7qZSgaspspKlm5u1f4N41K2xbtEnAYc07GJfDAbySoBhbkc");
+}
+.infoFlex {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 4rem;
+  color: var(--box-text);
+}
+.logoFlex {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.iconCover {
+  background-color: rgba(256, 256, 256, 0.1);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(256, 256, 256, 0.2);
+  padding: 0.6125rem;
+  border-radius: 0.75rem;
+}
+.icon {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  color: var(--box-text);
+  font-size: 1.875rem;
+}
+.name {
+  font-size: 1.875rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: var(--box-text);
+  letter-spacing: -0.025em;
+}
+.textOnPic {
+  max-width: 36rem;
+}
+.textHead {
+  font-size: 3.75rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  margin-top: 0;
+  margin-right: 0;
+  margin-left: 0;
+  line-height: 1.1;
+}
+.textPara {
+  font-size: 1.5rem;
+  font-weight: 300;
+  line-height: 1.625;
+  opacity: 0.9;
+}
+.footFlex {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.025em;
+  opacity: 0.6;
+}
+.points {
+  height: 0.25rem;
+  width: 0.25rem;
+  background-color: white;
+  border-radius: 9999px;
+}
+.rightFlex {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--bg-color);
+  padding-right: 2rem;
+  padding-left: 2rem;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+@media (min-width: 786px) {
+  .rightFlex {
+    padding-right: 2rem;
+    padding-left: 2rem;
+  }
+}
+@media (min-width: 1024px) {
+  .rightFlex {
+    padding-right: 4rem;
+    padding-left: 4rem;
+    width: 50%;
+  }
+}
+@media (min-width: 1280px) {
+  .rightFlex {
+    padding-right: 8rem;
+    padding-left: 8rem;
+  }
+}
+.fullForm {
+  width: 100%;
+  max-width: 560px;
+}
+.call {
+  margin-top: 0;
+  margin-right: 0;
+  margin-left: 0;
+  margin-bottom: 2rem;
+}
+.whereFlex {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.2rem;
+  margin-top: 2rem;
+  margin-right: 0;
+  margin-left: 0;
+}
+@media (min-width: 1024px) {
+  .whereFlex {
+    display: none;
+  }
+}
+@media (min-width: 1200px) {
+  .whereFlex {
+    display: flex;
+  }
+}
+.iconRight {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  color: var(--primary-color);
+  font-size: 1.875rem;
+  display: block;
+}
+.med {
+  color: var(--text-color);
+  font-weight: bold;
+  letter-spacing: -0.025em;
+}
+.callHead {
+  color: var(--text-color);
+  font-size: 2rem;
+  font-weight: bold;
+  letter-spacing: -0.025em;
+  margin-bottom: 0.75rem;
+  margin-top: 0;
+  margin-right: 0;
+  margin-left: 0;
+  white-space: nowrap;
+}
+.callPara {
+  color: var(--para-color);
+  font-size: 0.95rem;
+  margin-top: 0;
+}
+.form {
+  > * + * {
+    margin-top: 1.25rem;
+  }
+}
+.radio {
+  margin-bottom: 0.25rem;
+}
+.formLabel {
+  color: var(--text-color);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+.radioGrid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 0;
+  background-color: var(--bg-color);
+  border-radius: 0.75rem;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+}
+.roleSelect {
+  display: none;
+}
+.selectFlex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  color: var(--para-color);
+  background-color: var(--bg-color);
+  transition: all 0.2s ease;
+  border-radius: 0;
+}
+.roleSelect:checked + .selectFlex {
+  background-color: var(--primary-color);
+  color: white;
+  box-shadow: none;
+  transform: scale(1);
+}
+
+.selectIcon {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  display: inline-block;
+  font-size: 1.25rem;
+}
+.emPass {
+  > * + * {
+    margin-top: 0.75rem;
+  }
+}
+.emPassInput {
+  display: block;
+  width: 92%;
+  background-color: var(--bg-color);
+  height: 3.25rem;
+  padding-right: 1rem;
+  padding-left: 1rem;
+  color: var(--text-color);
+  font-size: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+.emPassInput:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(33, 94, 237, 0.1);
+}
+.emPassInput::placeholder {
+  color: var(--para-color);
+}
+.passFlex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+.forgot {
+  color: var(--primary-color);
+  font-weight: 500;
+  font-size: 0.8rem;
+  text-decoration: none;
+}
+.forgot:hover {
+  text-decoration: underline;
+}
+.passEyeContain {
+  position: relative;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.not {
+  color: var(--primary-color);
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  display: inline-block;
+}
+.continueButt {
+  width: 100%;
+  background-color: var(--primary-color);
+  color: var(--box-text);
+  font-weight: 600;
+  padding: 0.875rem 0;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  margin-top: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.load {
+  width: 100%;
+  background-color: var(--bg-special);
+  color: var(--para-color);
+  font-weight: 600;
+  padding: 0.875rem 0;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  margin-top: 0.5rem;
+  border: none;
+  cursor: default;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.continueButt:disabled {
+  width: 100%;
+  background-color: var(--bg-special);
+  color: var(--para-color);
+  font-weight: 600;
+  padding: 0.875rem 0;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid var(--border-color);
+  cursor: not-allowed;
+}
+.continueButt:disabled:hover {
+  background-color: var(--bg-special);
+}
+.continueButt:hover:not(:disabled) {
+  background-color: rgb(32, 88, 218);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(33, 94, 237, 0.3);
+}
+.continueButt:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* NEW BEAUTIFUL DIVIDER STYLES */
+.divider {
+  position: relative;
+  text-align: center;
+  margin: 1.75rem 0;
+}
+
+.dividerText {
+  background-color: var(--bg-color);
+  padding: 0 1rem;
+  color: var(--para-color);
+  font-size: 0.8rem;
+  text-transform: lowercase;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.divider::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+  z-index: 0;
+}
+
+.dividerText {
+  position: relative;
+  z-index: 1;
+}
+
+.googleGrid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1rem;
+}
+.googleButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  font-weight: 600;
+  padding: 0.875rem 0;
+  border-radius: 0.75rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.googleSpan {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+.googleButton:hover {
+  border-color: var(--primary-color);
+  background-color: #f8faff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(33, 94, 237, 0.1);
+}
+.svgCl {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+.new {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+.newPara {
+  color: var(--text-color);
+  font-weight: 500;
+  font-size: 0.85rem;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.newLink {
+  color: var(--primary-color);
+  font-weight: 600;
+  margin-left: 0.25rem;
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+.newLink:hover {
+  text-decoration: underline;
+}
+
+/* Better spacing for the title wrapper (used in JSX) */
+.titleWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.titleWrapper img {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+
+.titleWrapper h2 {
+  margin: 0;
+}

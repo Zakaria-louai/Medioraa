@@ -1,0 +1,276 @@
+.errorText {
+  color: rgb(255, 65, 65) !important;
+}
+body {
+  background-color: var(--bg-special);
+}
+.spin {
+  background-color: var(--bg-special);
+}
+.contain {
+  background-color: var(--bg-special);
+  padding: 2rem;
+}
+.main {
+  max-width: 900px;
+  height: auto;
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  padding: 1.5rem;
+  border-radius: 15px;
+  box-shadow: 3px 2px 2px rgba(37, 96, 237, 0.3);
+  margin: 2rem;
+}
+.logoFlex {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.icon {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  color: var(--primary-color);
+  font-size: 2.25rem;
+}
+.med {
+  color: var(--text-color);
+  font-weight: bold;
+  font-size: 1.5rem;
+  letter-spacing: -0.025em;
+}
+.requHead {
+  font-size: 1.3rem;
+  color: var(--text-color);
+}
+.requPara {
+  font-size: 1rem;
+  color: var(--para-color);
+}
+.professional {
+  padding-top: 0.5rem;
+}
+.professional > * + * {
+  margin-top: 0.2rem;
+}
+@media (min-width: 768px) {
+  .professional {
+    grid-column-start: auto;
+    grid-column-end: span 2;
+  }
+}
+.professionalHead {
+  color: var(--text-color);
+  font-weight: bold;
+  font-size: 1.125rem;
+}
+.documents {
+  margin-top: 0;
+  padding-top: 0;
+  display: grid;
+  grid-template-columns: 1;
+  gap: 1rem;
+}
+@media (min-width: 768px) {
+  .documents {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+.document {
+  padding: 1rem;
+  border-radius: 32px;
+  border: 2px dashed var(--border-color);
+  background-color: var(--bg-color);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition-property: all;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+.document:hover {
+  border: 2px dashed var(--primary-color);
+}
+.docCover {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.5rem;
+  background-color: var(--bg-color);
+  box-shadow: 0 1px 2px 0 rgba(229, 231, 235, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--para-color);
+}
+.document:hover .dotCover {
+  color: var(--primary-color);
+}
+.lastIcon {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  font-size: 1.5rem;
+}
+.tipPara1 {
+  font-weight: bold;
+  color: var(--text-color);
+  font-size: 0.875rem;
+}
+.tipPara2 {
+  color: var(--para-color);
+  font-size: 0.75rem;
+}
+.profileContainInput {
+  display: none;
+}
+.lastIcon1 {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  color: var(--primary-color);
+  font-size: 1.5rem;
+}
+.success {
+  color: var(--primary-color);
+}
+.infoDiv > * + * {
+  margin-top: 0.5rem;
+}
+.infoDivLabel {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-left: 0.25rem;
+  color: var(--text-color);
+}
+.infoDivText {
+  width: 83%;
+  height: 3.5rem;
+  margin-top: 0.3rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border-color);
+  color: var(--para-color);
+  background-color: var(--bg-color);
+  font-size: 1rem;
+}
+.infoDivText::placeholder {
+  color: var(--para-color);
+}
+.infoDivText:focus {
+  box-shadow: 0 0 0 2px rgba(37, 96, 237, 0.9);
+  outline: 0;
+  transition-property: all;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+.exist {
+  font-size: 0.9rem;
+  color: var(--primary-color);
+}
+.buttFlex {
+  display: flex;
+  justify-content: end;
+  gap: 2rem;
+  padding: 1rem;
+  margin-top: 1rem;
+  height: auto;
+  align-items: center;
+}
+.butt {
+  height: 60px;
+  width: 230px;
+  display: flex;
+  border: none;
+  background-color: var(--primary-color);
+  padding: 0.5rem;
+  color: var(--box-text);
+  box-shadow: 1px 1px 1px rgba(37, 96, 237, 0.3);
+  border-radius: 12px;
+  font-size: 1.05rem;
+  gap: 0.3rem;
+  align-items: center;
+  justify-content: center;
+  transition-property: all;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 600;
+}
+.butt:hover {
+  background-color: rgba(37, 96, 237, 0.9);
+  cursor: pointer;
+  gap: 0.7rem;
+}
+.disable {
+  height: 50px;
+  width: 230px;
+  display: block;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-special);
+  padding: 0.5rem;
+  color: var(--para-color);
+  box-shadow: 1px 1px 1px rgba(229, 231, 235, 0.05);
+  border-radius: 12px;
+  font-size: 1.1rem;
+  cursor: default;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.arrow {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  font-size: 1.1rem;
+  color: var(--box-text);
+}
+.iconLog {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  color: var(--box-text);
+  font-size: 1.5rem;
+}
+.containD {
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-color);
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 500px;
+}

@@ -1,0 +1,476 @@
+.errorText {
+  color: rgb(255, 65, 65) !important;
+}
+body {
+  background-color: var(--bg-color);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.mainContainer {
+  width: 100%;
+  max-width: 1100px;
+  min-height: 720px;
+  background-color: var(--bg-color);
+  box-shadow:
+    0 20px 25px -5px rgba(37, 94, 237, 0.1),
+    0 10px 10px -5px rgba(37, 94, 237, 0.04);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(37, 94, 237, 0.1);
+  margin-right: auto;
+  margin-left: auto;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+}
+@media (min-width: 786px) {
+  .mainContainer {
+    flex-direction: row;
+  }
+}
+.leftSide {
+  display: none;
+  background-color: var(--primary-color);
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 3rem;
+  position: relative;
+  color: var(--box-text);
+}
+@media (min-width: 786px) {
+  .leftSide {
+    display: flex;
+    width: 450px;
+  }
+}
+.leftInfo {
+  z-index: 10;
+}
+.leftLogo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+.icon {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  font-size: 1.875rem;
+}
+.med {
+  font-size: 1.5rem;
+  font-weight: bold;
+  letter-spacing: -0.025em;
+}
+.leftHead {
+  font-size: 1.875rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  line-height: 1.25;
+}
+.leftPara {
+  color: rgba(256, 256, 256, 0.8);
+  font-size: 1.125rem;
+  margin-bottom: 1rem;
+}
+.leftDescs > * + * {
+  margin-top: 1rem;
+}
+.desc {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.iconCover {
+  background-color: rgba(256, 256, 256, 0.1);
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+}
+.descIcons {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  font-size: 1.5rem;
+}
+.descHead {
+  font-weight: 500;
+  margin-bottom: 0.2rem;
+}
+.descPara {
+  margin-top: 0;
+  color: rgba(256, 256, 256, 0.8);
+  font-size: 0.875rem;
+}
+.imageContain {
+  position: relative;
+  margin-top: auto;
+  padding-top: 2.5rem;
+}
+.image {
+  border-radius: 0.75rem;
+  opacity: 0.9;
+  box-shadow:
+    0 10px 15px -3px rgba(36, 89, 224, 0.1),
+    0 4px 6px -2px rgba(36, 89, 224, 0.05);
+  border: 1px solid white;
+  max-width: 430px;
+  object-fit: contain;
+}
+.symbol {
+  position: absolute;
+  bottom: -1rem;
+  right: -1rem;
+  background-color: white;
+  color: var(--primary-color);
+  padding: 1rem;
+  border-radius: 0.75rem;
+  box-shadow:
+    0 20px 25px -5px rgba(36, 89, 224, 0.1),
+    0 10px 10px -5px rgba(36, 89, 224, 0.04);
+}
+.symbolIcon {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  font-size: 2.25rem;
+}
+.rightSide {
+  flex: 1;
+  display: flex;
+  padding: 2rem;
+  flex-direction: column;
+  justify-content: center;
+  background-color: var(--bg-color);
+}
+@media (min-width: 786px) {
+  .rightSide {
+    padding: 4rem;
+  }
+}
+.rightContainer {
+  max-width: 448px;
+  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+}
+.rightLogoFlex {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  color: var(--primary-color);
+}
+@media (min-width: 786px) {
+  .rightLogoFlex {
+    display: none;
+  }
+}
+.iconRight {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  font-size: 1.875rem;
+  color: var(--primary-color);
+}
+.medRight {
+  font-size: 1.5rem;
+  font-weight: bold;
+  letter-spacing: -0.025em;
+  color: var(--text-color);
+}
+.call {
+  margin-bottom: 2.5rem;
+}
+.callHeader {
+  color: var(--text-color);
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  font-size: 1.875rem;
+}
+.callPara {
+  color: var(--para-color);
+}
+.form > * + * {
+  margin-top: 1.5rem;
+}
+.passwordIn > * + * {
+  margin-top: 0.5rem;
+}
+.passLabel {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-color);
+}
+.input {
+  display: block;
+  width: 92.5%;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  outline: none;
+}
+.input:focus {
+  border: 1px solid var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(37, 94, 237, 0.6);
+  transition-property: all;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+.strengthContain {
+  margin-top: 0.4rem;
+}
+.powerFlex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 0.2rem;
+}
+.strong {
+  height: 3.5px;
+  background-color: var(--primary-color);
+  border-radius: 5px;
+}
+.weak {
+  height: 3.5px;
+  background-color: var(--border-color);
+  border-radius: 5px;
+}
+.match {
+  color: var(--primary-color);
+  margin-top: 0.2rem;
+  font-size: 12px;
+}
+.strong,
+.weak {
+  flex: 1;
+}
+.strength {
+  font-size: 14px;
+  margin-top: 0.25rem;
+  color: var(--para-color);
+}
+.strengthRate {
+  color: var(--primary-color);
+}
+.requi {
+  background-color: var(--bg-color);
+  padding: 1rem;
+  border-radius: 0.875rem;
+  border: 1px solid var(--border-color);
+}
+.requiHead {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--para-color);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+}
+.requiGrid {
+  display: grid;
+  grid-template-columns: 1;
+  row-gap: 0.3rem;
+  padding-top: 1.1rem;
+  padding-bottom: 0;
+}
+@media (min-width: 640px) {
+  .requiGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+.requiFlex {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--para-color);
+  font-size: 0.875rem;
+}
+.requiFlexFul {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--primary-color);
+  font-size: 0.875rem;
+}
+.requiIcon {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  font-size: 0.875rem;
+}
+.existNot {
+  color: var(--primary-color);
+  font-size: 0.9rem;
+  display: block;
+  margin-top: 1rem;
+  margin-bottom: none;
+}
+.buttons {
+  padding-top: 0.1rem;
+}
+.buttons > * + * {
+  margin-top: 0.5rem;
+}
+.upButt {
+  width: 100%;
+  background-color: var(--primary-color);
+  color: var(--box-text);
+  font-weight: 600;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  border-radius: 0.5rem;
+  box-shadow:
+    0 10px 15px -3px rgba(37, 94, 237, 0.1),
+    0 4px 6px -2px rgba(37, 94, 237, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: none;
+}
+.upButt:disabled {
+  width: 100%;
+  background-color: var(--bg-special);
+  color: var(--para-color);
+  font-weight: 600;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  border-radius: 0.5rem;
+  box-shadow:
+    0 5px 5px -2px rgba(229, 231, 235, 0.1),
+    0 1px 2px -1px rgba(229, 231, 235, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: none;
+}
+.upButt:disabled:hover {
+  cursor: default;
+  background-color: var(--bg-special);
+}
+.upButt:hover {
+  cursor: pointer;
+  transition-property: all;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: rgba(37, 94, 237, 0.9);
+}
+.buttIcon {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  font-size: 1rem;
+}
+.a {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--para-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  text-decoration: none;
+}
+.a:hover {
+  color: var(--primary-color);
+  transition-property: all;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+.aIcon {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  font-size: 0.9rem;
+}
+.noUnder {
+  text-decoration: none;
+  color: var(--para-color);
+  font-weight: 700;
+}
+.a:hover .noUnder {
+  cursor: pointer;
+  color: var(--primary-color);
+  transition-property: all;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+.footer {
+  margin-top: 3rem;
+  text-align: center;
+}
+.para {
+  font-size: 0.75rem;
+  color: var(--para-color);
+}
+.aFoot {
+  text-decoration: none;
+  color: var(--primary-color);
+}
+.aFoot:hover {
+  cursor: pointer;
+}

@@ -1,0 +1,304 @@
+html,body{
+    padding:0;
+    margin:0;
+}
+.pageFlex {
+    display:flex;
+    font-size: large;
+    font-family: 'LineSeedJP',sans-serif;
+    font-weight: 700;
+    width:100vw;
+    height:100vh;
+    flex-wrap: wrap;
+    gap:2rem;
+    justify-content: center;
+}
+.signinForm {
+    flex:1;
+    display:flex;
+    min-width: 40vw;
+    margin:0;
+    padding:3vw;
+    font-size: 2vw;
+    justify-content: center;
+}
+.order{
+    flex:1;
+}
+.covRoles{
+    border:none;
+    padding-left: 0;
+    margin-left: 0;
+    font-size:large ;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+.roles {
+    background-color: rgb(245, 245, 245);
+    text-align: center;
+    display:flex;
+    gap:0.5rem;
+    height:50px;
+    align-items: center;
+    justify-content: center;
+    border-radius:0.5vw;
+    padding-left:0.3vw;
+    padding-right: 0.3vw;
+    border: 1px solid rgb(227, 227, 227);
+}
+.patientLoButt {
+    flex:1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    border-radius: 0.5vw;
+    align-items: center;
+    justify-content: center;
+    gap:0.4rem;
+    height:45px;
+    cursor: pointer;
+    color: rgb(53, 53, 82);
+}
+.doctorLoButt {
+    flex:1;
+    display:flex;
+    flex-wrap: wrap;
+    border-radius: 0.5vw;
+    align-items: center;
+    justify-content: center;
+    height:45px;
+    gap:0.4rem;
+    cursor: pointer;
+    color:rgb(53, 53, 82);
+}
+.patdocRadio {
+    display: none;
+}
+.patientLoButt:has(.patdocRadio:checked) {
+   background-color: rgb(83, 83, 250);
+   color:white;
+   transition: 0.3s;
+}
+.doctorLoButt:has(.patdocRadio:checked) {
+   background-color: rgb(83, 83, 250);
+   color:white;
+   transition:0.3s;
+}
+.patIcon {
+    width:18px;
+    height:18px;
+    object-fit: contain;
+}
+.docIcon {
+    height:20px;
+    width:20px;
+    object-fit: contain;
+}
+.signinIm {
+    flex:1;
+    background-image:url("https://lh3.googleusercontent.com/aida-public/AB6AXuAN7E_o27g12aWgPeTUNBY1UiEiVqqfJSWR9xme_Abo7MOxBGjx5tlBg6Q9mkgW28MgFooN9WHXR614TYvdSPImBOAqOw1Ucu6mVfj2Msx1Nw2JIjhvzNsMtLLY3KG98rDziarZv-gXCKH6EomJvTP9KUwhXxV8LePgMwNQ05tRG7awsmQnEfIjAAjp2rHFLI8FOJ2qjAFJOQbvPNnW8y89HW4_v6C_C7qZSgaspspKlm5u1f4N41K2xbtEnAYc07GJfDAbySoBhbkc");
+    background-repeat: no-repeat;
+    background-size: cover;
+    color:rgb(242, 240, 253);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width:25vw;
+}
+.passwordFlex {
+    display:flex;
+    margin-bottom: 0.4rem;
+    justify-content: space-between;
+}
+.emailWrap {
+   border:none;
+   padding-left: 0;
+   margin-left: 0;
+   font-size: large;
+   margin-bottom: 1rem;
+}
+.email {
+    display:inline-block;
+    width:auto;
+    height:45px;
+    border-radius: 0.5vw;
+    font-size: large;
+    border:none;
+    color:rgb(120, 120, 184)
+}
+.email:focus {
+    outline: none;
+}
+.passwordWrap{
+    border:none;
+    padding-left: 0;
+    margin-left: 0;
+    font-size: large;
+}
+.passAlign {
+    color:rgb(53, 53, 82);
+}
+.forgAlign {
+    font-size: medium;
+    color:rgb(93, 93, 253);
+    cursor: pointer;
+}
+.password {
+    display:inline-block;
+    width:auto;
+    height:45px;
+    border-radius: 0.5vw;
+    font-size: large;
+    border:none;
+    color:rgb(120, 120, 184)
+}
+.password:focus {
+    outline:none;
+}
+legend {
+    color:rgb(53, 53, 82);
+}
+.hero{
+    font-size: 28px;
+    margin-bottom: 0.1rem;
+}
+.p1 {
+    font-size: 18px;
+    color:rgb(120, 120, 184);
+    margin-top: none;
+}
+.keep {
+    font-size: medium;
+    border:none;
+    padding-left: 0;
+    margin-left: 0;
+    color:rgb(53, 53, 82);
+}
+.keepFlex {
+    display: flex;
+    gap:0.2rem;
+    align-items: center;
+}
+.go {
+    flex:1;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    opacity:0.9;
+    height:45px;
+    background-color:rgb(83, 83, 250) ;
+    color:white;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: large;
+    margin-right:1rem;
+}
+.go:hover {
+    opacity:1;
+    transition: 0.3s;
+}
+.ord {
+    display:flex;
+    width:100%;
+    margin-top: 0.5rem;
+    margin-bottom: 0.4rem;
+}
+.lineFlex {
+    display: flex;
+    text-align: center;
+    align-items: center;
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+}
+.lineFlex::before,.lineFlex::after {
+    content:"";
+    flex:1;
+    border-bottom: 1px solid rgb(206, 206, 206);
+}
+.lineFlex span {
+    flex:1;
+    padding:0 10px;
+    font-size: x-small;
+    color:rgb(206, 206, 206);
+}
+.google {
+    cursor: pointer;
+    display:flex;
+    gap:1.5rem;
+    justify-content: center;
+    text-align: center;
+    text-decoration: none;
+    height:45px;
+    border-radius: 10px;
+    background-color: white;
+    border:1px solid black;
+    align-items: center;
+    font-size: medium;
+    margin-right: 1rem;
+}
+.goo {
+    height:20px;
+    width:20px;
+    background-size: contain;
+}
+.other{
+    flex:0.8;
+}
+.medFlex {
+    display:flex;
+    gap:2rem;
+    font-size: 25px;
+    justify-content: flex-start;
+}
+.cont {
+    max-width:39vw;
+    height:auto;
+}
+h1{
+    font-size: 50px;
+    border-bottom: 0.2rem;
+    margin-top:4rem;
+}
+p {
+    font-size: 20px;
+    font-weight: 300;
+}
+footer {
+   font-size: 16px;
+   display:flex;
+   justify-content: center;
+   gap:1.5rem;
+   opacity: 0.5;
+   margin-top:9rem;
+}
+.keepCheck {
+  accent-color: #4e57c0; 
+  cursor: pointer;
+  transition:0.5s;
+}
+@media (max-width:1048px) {
+    .pageFlex{
+        display:block;
+    }
+    .signinIm {
+        display:none;
+    }
+
+}
+.callFlex {
+    display:flex;
+    height:auto;
+    justify-content: center;
+    align-items: center;
+    font-size: 14.5px;
+    margin-top:1rem ;
+    gap:1rem;
+}
+.call {
+    color:#4e57c0;
+}
+.extraL {
+    flex:1;
+}

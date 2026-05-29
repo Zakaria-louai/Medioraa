@@ -1,0 +1,44 @@
+* {
+    font-family: 'LINE Seed Sans',sans-serif;
+}
+@font-face {
+  font-family: 'LINE Seed Sans';
+  src: url('/fonts/LINESeedSans_W_Th.woff') format('woff');
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'LINE Seed Sans';
+  src: url('/fonts/LINESeedSans_W_Rg.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'LINE Seed Sans';
+  src: url('/fonts/LINESeedSans_W_Bd.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'LINE Seed Sans';
+  src: url('/fonts/LINESeedSans_W_Xbd.woff') format('woff');
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'LINE Seed Sans';
+  src: url('/fonts/LINESeedSans_W_He.woff') format('woff');
+  font-weight: 900;
+  font-style: normal;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+  -webkit-text-fill-color: #616d89 !important;
+  transition: background-color 9999s ease-in-out 0s;
+}

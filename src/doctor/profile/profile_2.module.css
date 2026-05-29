@@ -1,0 +1,956 @@
+.spin {
+  background-color: var(--bg-special);
+  margin-left: auto;
+  margin-right: auto;
+  height: 100vh;
+  width: 90vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.aside {
+  background-color: var(--bg-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1.5rem;
+}
+.asideHeader {
+  font-weight: bold;
+  font-size: 1.5rem;
+  text-align: center;
+  color: var(--text-color);
+  margin-bottom: 1rem;
+}
+.profileContain {
+  position: relative;
+}
+.profileContainLabel {
+  height: 12rem;
+  width: 12rem;
+  border-radius: 9999px;
+  border: 3px dashed var(--border-color);
+  background-color: var(--bg-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  transition-property: all;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+.profileContainLab {
+  height: 16rem;
+  width: 16rem;
+  border-radius: 9999px;
+  background-color: var(--bg-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+.profileContain:hover .profileContainLabel {
+  border: 3px dashed var(--primary-color);
+  background-color: rgba(37, 96, 237, 0.05);
+  cursor: pointer;
+}
+.profileContainIcon {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  color: var(--border-color);
+  font-size: 3.75rem;
+}
+.profileContain:hover .profileContainIcon {
+  color: var(--primary-color);
+  transition-property: all;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+.profileContainPara {
+  color: var(--para-color);
+  font-size: 0.875rem;
+  margin-top: 1rem;
+  font-weight: 500;
+}
+.profileContain:hover .profileContainPara {
+  color: var(--primary-color);
+  transition-property: all;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+.profileContainIm {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+.profileContainInput {
+  display: none;
+}
+.profileAdd {
+  position: absolute;
+  bottom: 0.4rem;
+  right: 1rem;
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  height: 2.5rem;
+  width: 2.5rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 10px 15px -3px rgba(37, 96, 237, 0.1),
+    0 4px 6px -2px rgba(37, 96, 237, 0.05);
+  transform: scale(1);
+  transition: transform 0.2s ease;
+}
+.profileContain:hover .profileAdd {
+  transform: scale(1.1);
+  cursor: pointer;
+}
+.addIcon {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  font-size: 1.875rem;
+  color: var(--box-text);
+}
+.profileUnder {
+  margin-top: 1rem;
+  text-align: center;
+}
+.profileUnder > * + * {
+  margin-top: 0.5rem;
+}
+.profileUnderPara {
+  color: var(--para-color);
+  line-height: 1.625;
+  max-width: 20rem;
+}
+.profileUnderNotice {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-right: 1rem;
+  padding-left: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  background-color: var(--bg-color);
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: var(--text-color);
+  box-shadow: 0 1px 2px 0 rgba(229, 231, 235, 0.05);
+}
+.underIcon {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  color: var(--primary-color);
+  font-size: 1rem;
+}
+.existSake {
+  background-color: transparent;
+  color: var(--primary-color);
+  border: none;
+  text-align: center;
+}
+.greyAbsolute {
+  position: relative;
+  width: 100%;
+}
+.grey {
+  padding: 1rem;
+  height: 26px;
+  background-color: var(--bg-color);
+  color: var(--para-color);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  display: block;
+  width: 90%;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1.05rem;
+}
+.grey::placeholder {
+  color: var(--para-color);
+}
+.grey:focus {
+  border: 1.2px solid var(--primary-color);
+  outline: none;
+}
+.greyIcon {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  color: var(--primary-color);
+  font-size: 1.5rem;
+  position: absolute;
+  top: 0rem;
+  right: 0rem;
+  cursor: pointer;
+}
+.greyIcon:hover {
+  color: rgba(37, 96, 237, 0.8);
+  transform: scale(1.2);
+}
+.checkWait {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.taken {
+  color: var(--primary-color);
+  font-size: 0.9rem;
+}
+.main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+.modalOverlayP {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  background: rgba(0, 0, 0, 0.5);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 1000;
+}
+.modalContentP {
+  background: var(--bg-color);
+  padding: 1.5rem;
+  border-radius: 12px;
+  animation: scaleIn 0.2s ease;
+  width: 90%;
+  max-width: 950px;
+  z-index: 1000;
+}
+.leftSide {
+  width: 90%;
+  margin-right: auto;
+  margin-left: auto;
+}
+.leftSide > * + * {
+  margin-top: 2rem;
+}
+@media (min-width: 786px) {
+  .leftSide {
+    width: 41.5%;
+  }
+}
+.leftBack {
+  margin-bottom: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--para-color);
+  transition-property: all;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: transparent;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.leftBack:hover {
+  color: var(--primary-color);
+}
+.backIcon {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  font-size: 1rem;
+  transition-property: all;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+.leftBack:hover .backIcon {
+  transform: translateX(-0.25rem);
+}
+.leftHead {
+  font-weight: bold;
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-color);
+}
+.leftLogoIcon {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  color: var(--primary-color);
+  font-size: 1.4rem;
+}
+.leftPara {
+  color: var(--para-color);
+  margin-bottom: 1.5rem;
+  line-height: 1.625;
+}
+.hIPPA {
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background-color: rgba(37, 96, 237, 0.05);
+  display: flex;
+  gap: 1rem;
+  border: 1px solid rgba(37, 96, 237, 0.2);
+}
+.iconCover {
+  height: 3.5rem;
+  width: 3.5rem;
+  border-radius: 9999px;
+  background-color: rgba(37, 96, 237, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.hIPPAIcon {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  color: var(--primary-color);
+  font-size: 1.875rem;
+}
+.hIPPAHeader {
+  font-weight: bold;
+  font-size: 1.125rem;
+  margin-bottom: 0.25rem;
+  letter-spacing: -0.025em;
+  color: var(--text-color);
+}
+.hIPPAPara {
+  color: var(--para-color);
+  line-height: 1.625;
+  font-size: 0.875rem;
+}
+.rightSide {
+  width: 90%;
+  margin-right: auto;
+  margin-left: auto;
+}
+@media (min-width: 769px) {
+  .rightSide {
+    width: 58.5%;
+  }
+}
+.formContain {
+  background-color: var(--bg-color);
+  border-radius: 1rem;
+  border: 1px solid var(--border-color);
+  padding: 1rem;
+  box-shadow: 0 1px 2px 0 rgba(37, 96, 237, 0.05);
+}
+.form > * + * {
+  margin-top: 1rem;
+}
+.inputDiv > * + * {
+  margin-top: 0.75rem;
+}
+.label {
+  display: block;
+  color: var(--text-color);
+  font-weight: bold;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+}
+.input {
+  display: block;
+  width: 93%;
+  height: 4rem;
+  padding-right: 1.25rem;
+  padding-left: 1.25rem;
+  border-radius: 0.75rem;
+  outline: none;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-color);
+  color: var(--para-color);
+  font-size: 1.125rem;
+  transition-property: all;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+@media (max-width: 640px) {
+  .input {
+    width: 87%;
+  }
+}
+.input:focus {
+  box-shadow: 0 0 0 2px var(--primary-color);
+  border: 1px solid transparent;
+}
+.input::placeholder {
+  color: var(--para-color);
+}
+.infoFlex {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  background-color: var(--bg-color);
+}
+.infoIcon {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  color: var(--primary-color);
+  font-size: 1.25rem;
+}
+.infoPara {
+  color: var(--para-color);
+  font-size: 0.875rem;
+}
+.infoDiv > * + * {
+  margin-top: 0.5rem;
+}
+.infoDiv {
+  width: 100%;
+}
+.infoDivLabel {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-left: 0.25rem;
+  color: var(--text-color);
+}
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  background: rgba(0, 0, 0, 0.5);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 999;
+}
+.modalContent {
+  background: var(--bg-color);
+  padding: 16px;
+  border-radius: 12px;
+  animation: scaleIn 0.2s ease;
+  width: 90%;
+  max-width: 600px;
+}
+.modalContentPH {
+  background: var(--bg-color);
+  padding: 16px;
+  border-radius: 12px;
+  animation: scaleIn 0.2s ease;
+  min-width: 150px;
+  width: auto;
+}
+.modalContentPHE {
+  background: var(--bg-color);
+  padding: 16px;
+  border-radius: 12px;
+  animation: scaleIn 0.2s ease;
+  min-width: 300px;
+  width: auto;
+}
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.location {
+  position: relative;
+  cursor: pointer;
+}
+.locationButton {
+  width: 100%;
+  height: 3.5rem;
+  font-size: 1.05rem;
+  padding-left: 3rem;
+  padding-right: 1.5rem;
+  border-radius: 0.75rem;
+  color: var(--para-color);
+  font-weight: 500;
+  background-color: var(--bg-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border: 1px solid var(--border-color);
+}
+.location:hover .locationButton {
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  cursor: pointer;
+  transition-property: all;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+.locationIcon {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  position: absolute;
+  left: 1rem;
+  top: 1.7rem;
+  color: var(--para-color);
+  transform: translateY(-50%);
+  font-size: 1.5rem;
+}
+.location:hover .locationIcon {
+  color: var(--primary-color);
+}
+.mapButton {
+  border: none;
+  background-color: var(--bg-color);
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+}
+.mandatory {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 89%;
+  height: 90px;
+  gap: 0.5rem;
+  border: 1px solid rgb(255, 65, 65);
+  background-color: rgba(255, 65, 65, 0.2);
+  color: rgb(255, 65, 65);
+  padding: 1.5rem;
+  border-radius: 12px;
+}
+.errorText {
+  color: rgb(255, 65, 65) !important;
+}
+.mandatoryIcon {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  font-size: 1.05rem;
+}
+.mandatoryPara {
+  font-size: 0.9rem;
+}
+.saveFlex {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background-color: var(--primary-color);
+  color: var(--box-text);
+  height: 55px;
+  width: 96%;
+  padding: 0.5rem;
+  gap: 0.2rem;
+  box-shadow:
+    0 0 10px rgba(33, 94, 237, 0.5),
+    0 0 20px rgba(33, 94, 237, 0.3);
+  transition-property: all;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+.saveFlex:hover {
+  background-color: rgba(37, 96, 237, 0.8);
+  cursor: pointer;
+}
+.save {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  position: absolute;
+  top: 0.45rem;
+  left: 1rem;
+  font-size: 28px;
+}
+.draft {
+  border: none;
+  background-color: transparent;
+  font-size: 1.1rem;
+  height: auto;
+  color: var(--box-text);
+}
+.draftE {
+  border: none;
+  background-color: transparent;
+  font-size: 1.1rem;
+  height: auto;
+  color: var(--text-color);
+}
+.draftE:hover {
+  cursor: pointer;
+}
+.draft:hover {
+  cursor: pointer;
+}
+.saveFlexW {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  margin-top: 3rem;
+  background-color: var(--primary-color);
+  color: var(--box-text);
+  margin-top: 1rem;
+  height: 35px;
+  width: 97%;
+  padding: 0.5rem;
+  gap: 0.2rem;
+  box-shadow:
+    0 0 5px rgba(33, 94, 237, 0.5),
+    0 0 10px rgba(33, 94, 237, 0.3);
+  transition-property: all;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+.saveFlexW:hover {
+  background-color: rgba(37, 96, 237, 0.8);
+  cursor: pointer;
+}
+.saveFlexWH {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 12px;
+  margin-top: 3rem;
+  background-color: transparent;
+  color: var(--box-text);
+  margin-top: 1rem;
+  height: auto;
+  gap: 1.2rem;
+
+  padding: 0.5rem;
+}
+.saveFlexWHE {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  margin-top: 3rem;
+  background-color: var(--primary-color);
+  color: var(--box-text);
+  margin-top: 1rem;
+  height: 35px;
+  width: 90%;
+  padding: 0.5rem;
+  gap: 0.2rem;
+  box-shadow:
+    0 0 5px rgba(33, 94, 237, 0.5),
+    0 0 10px rgba(33, 94, 237, 0.3);
+  transition-property: all;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+.saveFlexWHE:hover {
+  background-color: rgba(37, 96, 237, 0.8);
+  cursor: pointer;
+}
+.stopDraft {
+  border: none;
+  background-color: transparent;
+  font-size: 1.1rem;
+  height: 100%;
+  color: var(--para-color);
+}
+.saveStop {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  margin-top: 3rem;
+  background-color: var(--bg-special);
+  color: var(--para-color);
+  margin-top: 1rem;
+  height: 35px;
+  width: 97%;
+  padding: 0.5rem;
+  gap: 0.2rem;
+  box-shadow:
+    0 0 5px rgba(15, 23, 42, 0.5),
+    0 0 10px rgba(15, 23, 42, 0.3);
+  transition-property: all;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+.be {
+  color: var(--primary-color);
+  font-size: 0.9rem;
+}
+.beF {
+  color: var(--primary-color);
+  cursor: pointer;
+  margin-top: 0.3rem;
+  display: block;
+  text-align: end;
+}
+.beF:hover {
+  text-decoration: underline;
+}
+.labelAlign {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--text-color);
+  text-align: center;
+  display: block;
+}
+.labelFlex {
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  display: flex;
+}
+.services {
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  padding: 1.2rem;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.serviceLabel {
+  font-weight: 500;
+  font-size: 1.05rem;
+  color: var(--text-color);
+  display: block;
+}
+.serviceLabelFlex {
+  font-size: 1.2rem;
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+  padding: 0.5rem;
+  font-weight: 525;
+}
+.serviceGrid {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  margin: 0.5rem;
+}
+.notFound {
+  padding: 0.5rem;
+  margin: 0.5rem;
+}
+.serviceInfo {
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1rem;
+}
+.serviceSpan {
+  display: block;
+  color: var(--para-color);
+  font-size: 0.9rem;
+}
+.serviceHeadMissing {
+  padding: 1rem;
+  font-size: 1.1rem;
+  margin: 1rem;
+}
+.serviceHead {
+  color: var(--text-color);
+  font-weight: 550;
+  font-size: 1.3rem;
+}
+.servicePara {
+  color: var(--para-color);
+  margin: 0.22rem;
+}
+.leaveFlex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+.serviceLabelE {
+  font-weight: 500;
+  font-size: 1.1rem;
+  color: var(--text-color);
+  display: block;
+}
+.serviceFieldDiv {
+  padding: 0.5rem;
+  margin-bottom: 0.3rem;
+}
+.serviceInput {
+  display: block;
+  height: 30px;
+  width: 90%;
+  padding: 0.5rem;
+  color: var(--para-color);
+  outline: none;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  transition-property: all;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  margin-top: 0.3rem;
+  background-color: var(--bg-color);
+}
+.serviceInput:focus {
+  border: 1.2px solid var(--primary-color);
+}
+.serviceInput::placeholder {
+  color: var(--para-color);
+}
+.serviceArea {
+  transition-property: all;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--para-color);
+  outline: none;
+  border: 1px solid var(--border-color);
+  padding: 0.5rem;
+  border-radius: 10px;
+  width: 90%;
+  margin-top: 0.5rem;
+  background-color: var(--bg-color);
+}
+.serviceArea::placeholder {
+  color: var(--para-color);
+}
+.serviceArea:focus {
+  border: 1.2px solid var(--primary-color);
+}
+.serviceSpanW {
+  display: block;
+  color: var(--primary-color);
+  font-size: 1rem;
+  margin-bottom: 0.2rem;
+}
+.spaceFlex {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  height: 30px;
+  background-color: var(--bg-color);
+}
+.space {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-color);
+  height: 25px;
+  border-radius: 12px;
+  background-color: var(--bg-color);
+  padding: 0.7rem;
+}
+.paraSpace {
+  color: var(--para-color);
+  font-size: 13px;
+}

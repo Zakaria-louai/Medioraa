@@ -1,0 +1,207 @@
+* {
+    font-family: 'Line Seed Sans',serif;
+}
+.complete3Flex {
+    display:flex;
+    justify-content: space-between;
+}
+.oneThirdFlex3 {
+    display:flex ;
+    margin:0.5rem;
+}
+.bar3 {
+    flex:1;
+    border-radius: 2px;
+    height:7px;
+    background-color:rgb(35, 35, 255);
+    box-shadow: 0 0 3px rgb(74, 74, 255);
+}
+.pageFlexSignUp3 {
+    overflow:hidden;
+    display:flex;
+    border-radius: 12px;
+    width:80vw;
+    gap:2rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+.conditionsSignUp3{
+    display: flex;
+    flex:0.75;
+    flex-direction: column;
+    gap:0.5rem;
+}
+.secureFlexSignUp3{
+    display:flex;
+    font-size: 24px;
+    gap:0.5rem;
+    align-items: center;
+    font-weight: 550;
+    padding:0.6rem;
+}
+.conditionBorder {
+    border:1.5px solid rgb(225, 225, 225);
+}
+.passWordSignUp3 {
+    display:block;
+    margin-bottom:1rem;
+    margin-top: 1rem;
+    font-size: 16px;
+    font-weight: 500;
+}
+.formSignUp3 {
+    flex:1.25;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    border:1.2px solid rgb(225, 225, 225);
+    border-radius:10px;
+}
+.conditionFlexSignUp3 {
+    height:35px;
+    color:white;
+    background-color:rgb(70, 70, 249) ;
+    display:flex;
+    gap:0.7rem;
+    align-items: center;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 430;
+    padding:0.7rem;
+    font-weight: 500;
+    opacity:0.9;
+    box-shadow: 0 0 5px rgb(74, 74, 255);
+}
+.passInSignUp3 {
+    height:45px;
+    width:80%;
+    font-size: 17px;
+    border-radius: 10px;
+    outline:1px solid rgb(225, 225, 225);
+    border:none;
+    padding:0.72rem;
+}
+.passInSignUp3:focus {
+    outline:1.5px solid rgb(70, 70, 249);
+    box-shadow: 0 0 5px rgb(74, 74, 255); 
+    transition: 0.3s;
+}
+.warningFlexSignUp3 {
+    margin-top: 3.7rem;
+    border:1px solid rgb(225, 225, 225);
+    padding:1rem;
+    padding-right: 2rem;
+    border-radius: 8px;
+    display:flex;
+    gap:0.35rem;
+    opacity:0.7;
+}
+.infoImSignUp3 {
+    height:20px;
+    width:20px;
+}
+.secureImSignUp3 {
+    height:20px;
+    width:20px;
+    object-fit: contain;
+}
+.circleImSignUp3 {
+    height:16px;
+    width:16px;
+    object-fit: contain;
+}
+.doneSignUp3{
+    width:80vw;
+    height:57px;
+    color:white;
+    background-color:rgb(70, 70, 249) ;
+    border:none;
+    font-size: 20px;
+    font-weight: 500;
+    text-align: center;
+    border-radius: 12px;
+    padding:1rem;
+    box-shadow: 0 0 8px rgb(74, 74, 255);
+    opacity:0.82;
+}
+.doneSignUp3:hover {
+    opacity:1;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.doneSignUp3:disabled{
+    color:rgb(233, 233, 233);
+    background-color: rgb(211, 211, 211);
+    box-shadow: none;
+    cursor: default;
+}
+.endParaSignUp3{
+    text-align: center;
+    font-size: 13.4px;
+    font-weight: 500;
+    margin-bottom: 2rem;
+    opacity: 0.7;
+}
+.termsSignUp3 {
+    border:none;
+    background-color: white;
+    color:rgb(70, 70, 249) ;
+    font-size: 14px;
+}
+.termsSignUp3:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+.matchSignUp3 {
+    text-align: center;
+    font-size:16px;
+    opacity:0.8;
+}
+.secureOrderSignUp3 {
+    font-size: 20px;
+    font-weight: 580;
+}
+.stepNumSignUp3 {
+    color:rgb(70, 70, 249);
+}
+@media(max-width:1000px) {
+    
+    .conditionsSignUp3 {
+        margin:1rem;
+    }
+    .pageFlexSignUp3 {
+        display:block;
+    width:100%;
+    gap:3rem;
+    margin-left: 0;
+    }
+    .complete3Flex {
+        padding:1rem;
+    }
+    .passInSignUp3 {
+        width:90%;
+    }
+    .doneSignUp3 {
+        padding:1rem;
+        margin-left:1.2rem;
+        width:90%;
+        font-size: 16px;
+    }
+    .secureOrderSignUp3 {
+        display:none;
+    }
+}
+.insiderConditionFlexSignUp3 {
+    display:flex;
+    flex-direction: column;
+    gap:0.5rem;
+    border:1.5px solid rgb(225, 225, 225);
+    padding:1rem;
+    border-radius: 10px;
+}
+.strengthSignUp3 {
+    font-size: 14px;
+    padding-top: 0.4rem;
+}
+.strengthColorSignUp3{
+    color:rgb(70, 70, 249) ;
+}

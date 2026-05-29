@@ -1,0 +1,112 @@
+* {
+    font-family: 'Line Seed Sans',sans-serif;
+}
+@font-face {
+  font-family: 'LINE Seed Sans';
+  src: url('/fonts/LINESeedSans_W_Th.woff') format('woff');
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'LINE Seed Sans';
+  src: url('/fonts/LINESeedSans_W_Rg.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'LINE Seed Sans';
+  src: url('/fonts/LINESeedSans_W_Bd.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'LINE Seed Sans';
+  src: url('/fonts/LINESeedSans_W_Xbd.woff') format('woff');
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'LINE Seed Sans';
+  src: url('/fonts/LINESeedSans_W_He.woff') format('woff');
+  font-weight: 900;
+  font-style: normal;
+}
+.pageFlexSignUp{
+    display:flex;
+    justify-content:center;
+}
+.medPicSignUp{
+    width:30px;
+    height: 30px;
+    object-fit: contain;
+}
+.recoFlex {
+    display:flex;
+    flex-wrap: wrap;
+    margin:2rem;
+    justify-content: space-between;
+}
+.medFlexSignUp {
+    display:flex;
+    height:auto;
+    font-size:25px;
+    font-weight: 700;
+    gap:0.7rem;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+.backFlexSignUp{
+    display:flex;
+    height:auto;
+    font-size: 18px;
+    font-weight: 500;
+    gap:0.4rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+.signInSignUp {
+    color:rgb(35, 35, 255);
+    cursor: pointer;
+}
+.footFlexSignUp {
+    font-size: 16px;
+    margin-top: 3rem;
+    display:flex;
+    justify-content: space-between;
+}
+.lastFlexSignUp {
+    display:flex;
+    gap:1rem;
+}
+.footerOpSignUp {
+    border:none;
+    background-color: white;
+    font-size: 16px;
+    text-align: center;
+    color:black;
+    opacity:0.8;
+    font-weight: 500;
+}
+.footerOpSignUp:hover {
+    color:rgb(35, 35, 255);
+    cursor: pointer;
+    transition: 0.3s;
+    opacity:1;
+}
+@media(max-width:1000px) {
+.footFlexSignUp{
+    padding:0.5rem;
+}
+.proofSignUp {
+    display:none;
+}
+.lastFlexSignUp {
+    flex:1;
+}
+}
