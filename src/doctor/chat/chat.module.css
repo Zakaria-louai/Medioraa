@@ -1341,4 +1341,66 @@
 .welcomeMessage p {
   margin: 0;
   font-size: 14px;
+}.loadMoreBtn {
+  width: 100%;
+  padding: 10px;
+  background: none;
+  border: none;
+  color: var(--primary, #4f8ef7);
+  cursor: pointer;
+  font-size: 13px;
+  border-top: 1px solid var(--border, #eee);
+}
+.loadMoreBtn:hover {
+  background: var(--hover, #f5f5f5);
+}/* WebSocket Connection Status */
+.connectionStatus {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  font-size: 12px;
+  font-weight: 500;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+  margin: 0;
+}
+
+.connectionStatus.connected {
+  color: #10b981;
+}
+
+.connectionStatus.disconnected {
+  color: #ef4444;
+}
+
+.statusDotSmall {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  display: inline-block;
+}
+
+.connected .statusDotSmall {
+  background: #10b981;
+  animation: pulse 2s infinite;
+}
+
+.disconnected .statusDotSmall {
+  background: #ef4444;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }

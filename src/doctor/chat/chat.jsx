@@ -1,11 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import styles from "./chat.module.css";
-import { getChatContacts, getConversationMessages, patchConversation } from "../../api/api";
-import { useEffect } from "react";
-import { useRef } from "react";
-import { useMemo } from "react";
+import { getContacts, getMessages, renameConversation } from "../../api/api.jsx";
 
-// MOCK CONVERSATION FOR TESTING
+// ─── MOCK FALLBACKS (used if API fails during dev) ───────────────────────────
+
 const MOCK_CONVERSATION = {
   id: "mock-conv-001",
   name: "Test Patient",
@@ -14,10 +12,9 @@ const MOCK_CONVERSATION = {
   lastMessageTime: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
   unreadCount: 1,
   isOnline: true,
-  isMock: true
+  isMock: true,
 };
 
-// MOCK MESSAGES FOR TESTING
 const MOCK_MESSAGES = [
   {
     id: "mock-msg-1",
@@ -25,14 +22,14 @@ const MOCK_MESSAGES = [
     timestamp: new Date(Date.now() - 3600000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     isSentByMe: false,
     senderName: "Test Patient",
-    senderAvatar: "/default-avatar.png"
+    senderAvatar: "/default-avatar.png",
   },
   {
     id: "mock-msg-2",
     text: "Of course, what would you like to know?",
     timestamp: new Date(Date.now() - 3500000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     isSentByMe: true,
-    isPending: false
+    isPending: false,
   },
   {
     id: "mock-msg-3",
@@ -40,646 +37,562 @@ const MOCK_MESSAGES = [
     timestamp: new Date(Date.now() - 3400000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     isSentByMe: false,
     senderName: "Test Patient",
-    senderAvatar: "/default-avatar.png"
-  }
+    senderAvatar: "/default-avatar.png",
+  },
 ];
 
-// MOCK PATIENT PROFILE
 const MOCK_PATIENT_PROFILE = {
   name: "Test Patient",
   picture: "/default-avatar.png",
-  nextAppointment: {
-    date: "2024-12-15",
-    time: "10:30 AM"
-  },
+  nextAppointment: { date: "2024-12-15", time: "10:30 AM" },
   documents: [
-    { id: "doc1", name: "Lab Results.pdf", size: "2.4 MB", date: "2024-11-20", type: "pdf", url: "#" },
-    { id: "doc2", name: "X-Ray Image.png", size: "1.8 MB", date: "2024-11-15", type: "img", url: "#" },
-    { id: "doc3", name: "Prescription.pdf", size: "856 KB", date: "2024-11-10", type: "pdf", url: "#" }
-  ]
+    { id: "doc1", name: "Lab Results.pdf",  size: "2.4 MB", date: "2024-11-20", type: "pdf", url: "#" },
+    { id: "doc2", name: "X-Ray Image.png",  size: "1.8 MB", date: "2024-11-15", type: "img", url: "#" },
+    { id: "doc3", name: "Prescription.pdf", size: "856 KB", date: "2024-11-10", type: "pdf", url: "#" },
+  ],
 };
 
+// ─── HELPERS ──────────────────────────────────────────────────────────────────
+
+const LIMIT     = 10;  // contacts per page
+const MSG_LIMIT = 20;  // messages per page
+
+/** Map a raw backend contact object to the shape the UI expects.
+ *
+ * Response shape:
+ * {
+ *   id, name, is_group, last_message, created_at,
+ *   user: { id, first_name, last_name, username, picture }
+ * }
+ *
+ * The conversation `name` field defaults to "for later" on the backend,
+ * so we always derive the display name from user.first_name + user.last_name.
+ */
+function mapContact(c) {
+  const user       = c.user ?? {};
+  const firstName  = user.first_name ?? "";
+  const lastName   = user.last_name  ?? "";
+  const fullName   = [firstName, lastName].filter(Boolean).join(" ") || user.username || "Unknown";
+
+  return {
+    id:          c.id,
+    name:        fullName,
+    avatar:      user.picture ?? "/default-avatar.png",
+    lastMessage: c.last_message ?? "",
+    lastMessageTime: c.created_at
+      ? new Date(c.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+      : "",
+    isOnline:              false,
+    unreadCount:           0,
+    userId:                user.id,
+    username:              user.username,
+    conversationCreatedAt: c.created_at ?? "", // used for dedup: keep most recent conversation per user
+    isMock:                false,
+  };
+}
+
+// ─── COMPONENT ────────────────────────────────────────────────────────────────
+
 function Chat() {
-  const [conversations, setConversations] = useState([]);
-  const [messages, setMessages] = useState([]);
+  const [conversations, setConversations]               = useState([]);
+  const [messages, setMessages]                         = useState([]);
   const [selectedConversation, setSelectedConversation] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [newMessage, setNewMessage] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const messagesEndRef = useRef(null);
-  const [isEditingName, setIsEditingName] = useState(false);
-  const [editingName, setEditingName] = useState("");
-  const [conversationMessages, setConversationMessages] = useState({});
-  const [patientProfile, setPatientProfile] = useState({
+  const [searchQuery, setSearchQuery]                   = useState("");
+  const [newMessage, setNewMessage]                     = useState("");
+  const [isTyping, setIsTyping]                         = useState(false);
+  const [loading, setLoading]                           = useState(false);
+  const [loadingMessages, setLoadingMessages]           = useState(false);
+  const [page, setPage]                                 = useState(1);
+  const [hasMore, setHasMore]                           = useState(true);
+  const [msgPage, setMsgPage]                           = useState(1);
+  const [hasMoreMessages, setHasMoreMessages]           = useState(false);
+  const [isEditingName, setIsEditingName]               = useState(false);
+  const [editingName, setEditingName]                   = useState("");
+  const [isConnected, setIsConnected]                   = useState(false); // WebSocket connection status
+  const [patientProfile, setPatientProfile]             = useState({
     name: "",
     picture: "",
-    nextAppointment: {
-      date: "",
-      time: ""
-    },
-    documents: []
+    nextAppointment: { date: "", time: "" },
+    documents: [],
   });
-  const fileInputRef = useRef(null);
-  
-  // WebSocket ref
-  const wsRef = useRef(null);
-  const [isConnected, setIsConnected] = useState(false);
-  const reconnectTimeoutRef = useRef(null);
-  
-  // Fix #1: Store selectedConversation in ref to avoid stale closure
-  const selectedConversationRef = useRef(null);
-  
-  // Fix #2: Typing timeout ref instead of window
-  const typingTimeoutRef = useRef(null);
-  
-  // Fix #3: Typing reset ref for race condition
-  const typingResetRef = useRef(null);
-  
-  // Track message IDs to prevent duplicates (Fix #4)
-  const messageIdsRef = useRef(new Set());
 
-  // Update ref when selectedConversation changes
+  const messagesEndRef    = useRef(null);
+  const fileInputRef      = useRef(null);
+  const typingTimeoutRef  = useRef(null);
+  const wsRef             = useRef(null);   // WebSocket instance
+  const pingRef           = useRef(null);   // setInterval for ping keepalive
+  const currentConvIdRef  = useRef(null);   // tracks open conversation id
+  const reconnectTimeoutRef = useRef(null); // for reconnection
+
+  // ── Auto-scroll to latest message ─────────────────────────────────────────
   useEffect(() => {
-    selectedConversationRef.current = selectedConversation;
-  }, [selectedConversation]);
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
-  // WebSocket connection function with reconnect (Fix #6)
-  const connectWebSocket = () => {
-    const token = localStorage.getItem("token");
+  // ── Fetch contacts from backend ────────────────────────────────────────────
+  useEffect(() => {
+    const fetchContacts = async () => {
+      setLoading(true);
+      try {
+        const response = await getContacts(page, LIMIT);
 
-    if (!token) {
-      console.log("No token found");
-      return;
+        // Backend may wrap the array in .data or return it directly
+        const raw = response.data?.data ?? response.data ?? [];
+        const contacts = Array.isArray(raw) ? raw : [];
+
+        const mapped = contacts.map(mapContact);
+
+        // Deduplicate by userId — same patient may have multiple conversations;
+        // keep the entry whose conversation was created most recently.
+        const deduped = Object.values(
+          mapped.reduce((acc, contact) => {
+            const key = contact.userId;
+            if (!acc[key]) {
+              acc[key] = contact;
+            } else {
+              // compare by lastMessageTime string isn't reliable; use raw created_at
+              // We stored conversationCreatedAt on the mapped object for this purpose
+              if (contact.conversationCreatedAt > acc[key].conversationCreatedAt) {
+                acc[key] = contact;
+              }
+            }
+            return acc;
+          }, {})
+        );
+
+        setConversations((prev) =>
+          page === 1 ? deduped : [...prev, ...deduped]
+        );
+        setHasMore(mapped.length === LIMIT);
+      } catch (error) {
+        console.error("Failed to fetch contacts:", error);
+        // Fall back to mock so the UI is never broken during development
+        if (page === 1) {
+          setConversations([MOCK_CONVERSATION]);
+        }
+        setHasMore(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchContacts();
+  }, [page]);
+
+  // ── Input / typing ────────────────────────────────────────────────────────
+  const handleInputChange = (e) => {
+    setNewMessage(e.target.value);
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    typingTimeoutRef.current = setTimeout(() => {
+      // typing stopped — could emit socket event here later
+    }, 1000);
+  };
+
+  // ── Map a raw message from the backend to the UI shape ───────────────────
+  // Doctor's id is stored under the key "doctorId" in localStorage
+  const myDoctorId = localStorage.getItem("doctorId");
+
+  function mapMessage(m) {
+    const senderId   = m.sender_id;
+    // Convert both to string for comparison
+    const isMine     = String(senderId) === String(myDoctorId);
+    const sender     = m.sender ?? {};
+
+    return {
+      id:           m.id,
+      text:         m.body ?? "",
+      timestamp:    m.created_at
+        ? new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+        : "",
+      isSentByMe:   isMine,
+      isPending:    false,
+      isRead:       m.is_read ?? false,
+      senderName:   isMine ? "Me" : `${sender.first_name ?? ""} ${sender.last_name ?? ""}`.trim(),
+      senderAvatar: isMine ? null : (sender.picture ?? "/default-avatar.png"),
+    };
+  }
+
+  // ── Fetch messages for a conversation (merges, no duplicates) ────────────
+  const fetchMessages = async (convId, pageNum = 1, append = false) => {
+    if (!convId) return;
+    try {
+      if (!append) setLoadingMessages(true);
+      const response = await getMessages(convId, pageNum, MSG_LIMIT);
+      const raw      = response.data?.data ?? response.data ?? [];
+      const msgs     = (Array.isArray(raw) ? raw : []).map(mapMessage);
+
+      const ordered = pageNum === 1 ? [...msgs].reverse() : msgs;
+
+      if (append) {
+        setMessages((prev) => {
+          const existingIds = new Set(prev.map((m) => m.id));
+          const newOnes     = ordered.filter((m) => !existingIds.has(m.id));
+          return [...newOnes, ...prev];
+        });
+      } else {
+        setMessages(ordered);
+      }
+
+      setHasMoreMessages(msgs.length === MSG_LIMIT);
+
+      if (msgs.length > 0 && pageNum === 1) {
+        const latest = msgs[0]; // newest message 
+        setConversations((prev) =>
+          prev.map((conv) =>
+            conv.id === convId
+              ? { ...conv, lastMessage: latest.text, lastMessageTime: latest.timestamp }
+              : conv
+          )
+        );
+      }
+    } catch (err) {
+      console.error("Failed to fetch messages:", err);
+    } finally {
+      setLoadingMessages(false);
     }
+  };
 
-    // Clear any pending reconnect
+  // ── WebSocket ─────────────────────────────────────────────────────────────
+
+  const WS_URL = `wss://mediora-back-2.onrender.com/chat/ws`;
+
+  /** Send a JSON frame — safe even if socket isn't open yet */
+  const wsSend = (payload) => {
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify(payload));
+    }
+  };
+
+  /** Start ping keepalive — server expects a ping every ~30 s */
+  const startPing = () => {
+    stopPing();
+    pingRef.current = setInterval(() => {
+      wsSend({ type: "ping" });
+    }, 25000);
+  };
+
+  const stopPing = () => {
+    if (pingRef.current) {
+      clearInterval(pingRef.current);
+      pingRef.current = null;
+    }
+  };
+
+  /** Open (or re-open) the WebSocket connection */
+  const connectWS = () => {
     if (reconnectTimeoutRef.current) {
       clearTimeout(reconnectTimeoutRef.current);
       reconnectTimeoutRef.current = null;
     }
 
-    // Close existing connection if any
     if (wsRef.current && (wsRef.current.readyState === WebSocket.OPEN || wsRef.current.readyState === WebSocket.CONNECTING)) {
       wsRef.current.close();
     }
 
-    const wsUrl = `wss://mediora-back-2.onrender.com/chat/ws?token=${token}`;
-    console.log("Connecting to:", wsUrl);
-
-    const ws = new WebSocket(wsUrl);
+    const token = localStorage.getItem("token");
+    const url   = token ? `${WS_URL}?token=${token}` : WS_URL;
+    const ws    = new WebSocket(url);
     wsRef.current = ws;
 
     ws.onopen = () => {
-      console.log("WebSocket connected");
+      console.log("WS connected");
       setIsConnected(true);
-      
-      // Clear message IDs on reconnect to prevent stale state
-      messageIdsRef.current.clear();
+      // Authenticate / announce presence
+      wsSend({ type: "ping" });
+      startPing();
     };
 
     ws.onmessage = (event) => {
-      console.log("MESSAGE:", event.data);
+      let data;
+      try { data = JSON.parse(event.data); } catch { return; }
 
-      try {
-        const data = JSON.parse(event.data);
-        console.log("Parsed:", data);
-        
-        // Use ref to get current selectedConversation
-        const currentSelectedConv = selectedConversationRef.current;
-        
-        if (data.type === "message.new") {
-          // New message received
-          const newMsg = {
-            id: data.payload.id || Date.now(),
-            text: data.payload.message || data.payload.text || "",
-            timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-            isSentByMe: false,
-            senderName: currentSelectedConv?.name || "Patient",
-            senderAvatar: currentSelectedConv?.avatar || "/default-avatar.png"
-          };
-          
-          // Fix #4: Message deduplication
-          if (currentSelectedConv && data.payload.conversation_id === currentSelectedConv.id) {
-            setMessages(prev => {
-              // Check if message already exists
-              if (prev.some(m => m.id === newMsg.id)) {
-                console.log("Duplicate message prevented:", newMsg.id);
-                return prev;
-              }
-              return [...prev, newMsg];
-            });
-          }
-          
-          // Update conversation list with new message preview
-          setConversations(prev => 
-            prev.map(conv => 
-              conv.id === data.payload.conversation_id
-                ? { 
-                    ...conv, 
-                    lastMessage: newMsg.text,
-                    lastMessageTime: newMsg.timestamp,
-                    unreadCount: currentSelectedConv?.id === conv.id ? 0 : (conv.unreadCount || 0) + 1
-                  }
-                : conv
-            )
-          );
-        } else if (data.type === "message.sent") {
-          // Fix #5: Always rely on tempId for matching
-          const tempId = data.payload.tempId;
-          if (tempId) {
-            setMessages(prev =>
-              prev.map(msg =>
-                msg.id === tempId
-                  ? { ...msg, isPending: false, id: data.payload.id || msg.id }
-                  : msg
-              )
-            );
-          } else {
-            console.warn("Received message.sent without tempId, cannot reliably match");
-            // Fallback only for legacy messages without tempId
-            if (data.payload.id) {
-              setMessages(prev =>
-                prev.map(msg =>
-                  msg.isPending === true && !msg.id.toString().startsWith('real_')
-                    ? { ...msg, isPending: false, id: data.payload.id }
-                    : msg
-              )
-            );
-            }
-          }
-        } else if (data.type === "user.typing") {
-          // Fix #3: Handle typing indicator with race condition fix
-          if (currentSelectedConv && data.payload.conversation_id === currentSelectedConv.id) {
-            setIsTyping(data.payload.is_typing);
-            
-            // Only set auto-clear for active typing
-            if (data.payload.is_typing) {
-              // Clear any existing timeout
-              if (typingResetRef.current) {
-                clearTimeout(typingResetRef.current);
-              }
-              
-              // Set new timeout to clear typing indicator after 2 seconds of no updates
-              typingResetRef.current = setTimeout(() => {
-                setIsTyping(false);
-              }, 2000);
-            }
-          }
-        }
-      } catch (err) {
-        console.log("Non JSON message:", event.data);
-      }
-    };
+      const { type, payload } = data;
 
-    ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
-      setIsConnected(false);
-    };
-
-    ws.onclose = (event) => {
-      console.log("WebSocket closed");
-      console.log("Code:", event.code);
-      console.log("Reason:", event.reason);
-      setIsConnected(false);
-      
-      // Fix #6: Reconnect logic
-      if (event.code !== 1000) { // Don't reconnect on normal closure
-        console.log("Attempting to reconnect in 3 seconds...");
-        reconnectTimeoutRef.current = setTimeout(() => {
-          connectWebSocket();
-        }, 3000);
-      }
-    };
-  };
-
-  // Initialize WebSocket connection
-  useEffect(() => {
-    connectWebSocket();
-
-    return () => {
-      // Cleanup
-      if (wsRef.current) {
-        wsRef.current.close();
-      }
-      if (reconnectTimeoutRef.current) {
-        clearTimeout(reconnectTimeoutRef.current);
-      }
-      if (typingTimeoutRef.current) {
-        clearTimeout(typingTimeoutRef.current);
-      }
-      if (typingResetRef.current) {
-        clearTimeout(typingResetRef.current);
-      }
-    };
-  }, []); // Empty dependency array
-
-  // Send typing indicator
-  const sendTypingIndicator = (isTyping) => {
-    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN && selectedConversation && !selectedConversation.isMock) {
-      wsRef.current.send(JSON.stringify({
-        type: "message.typing",
-        payload: {
-          conversation_id: selectedConversation.id,
-          is_typing: isTyping
-        }
-      }));
-    }
-  };
-
-  // Handle input change with typing indicator
-  const handleInputChange = (e) => {
-    setNewMessage(e.target.value);
-    
-    // Send typing indicator
-    if (e.target.value.length > 0) {
-      sendTypingIndicator(true);
-      if (typingTimeoutRef.current) {
-        clearTimeout(typingTimeoutRef.current);
-      }
-      typingTimeoutRef.current = setTimeout(() => {
-        sendTypingIndicator(false);
-      }, 1000);
-    } else {
-      sendTypingIndicator(false);
-    }
-  };
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({
-      behavior: "smooth",
-    });
-  }, [messages]);
-
-  useEffect(() => {
-    fetchConversations();
-  }, []);
-
-  const handleConversationClick = async (conversation) => {
-    try {
-      setSelectedConversation(conversation);
-      messageIdsRef.current.clear();
-console.log("FULL CONVERSATION:", conversation);
-      if (conversation.isMock) {
-        console.log("Using mock conversation data");
-        setMessages(MOCK_MESSAGES);
-        setPatientProfile(MOCK_PATIENT_PROFILE);
+      if (type === "ping") {
+        // server acknowledged ping — connection is alive
         return;
       }
 
-      if (conversation.id) {
-        console.log("Fetching real conversation:", conversation.id);
-        const data = await getConversationMessages(conversation.id);
-        console.log("Messages data:", data);
-        
-        // Handle different response structures
-        let messagesArray = [];
-        if (data && data.data && Array.isArray(data.data)) {
-          messagesArray = data.data;
-        } else if (data && Array.isArray(data)) {
-          messagesArray = data;
-        } else if (data && data.messages && Array.isArray(data.messages)) {
-          messagesArray = data.messages;
-        } else {
-          messagesArray = [];
-        }
-        
-        console.log("Messages array:", messagesArray);
-        
-        const formattedMessages = messagesArray.map((msg) => ({
-          id: msg.id,
-          text: msg.body || msg.message || msg.text || "",
-          timestamp: msg.created_at || msg.createdAt
-            ? new Date(msg.created_at || msg.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+      if (type === "message.sent") {
+        // A message was delivered (sent by us OR by the other party)
+        const msg = {
+          id:           payload.id ?? payload.message_id,
+          text:         payload.body ?? payload.message ?? "",
+          timestamp:    payload.created_at
+            ? new Date(payload.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
             : new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-          isSentByMe: msg.sender_type === "doctor" || msg.sender_id === localStorage.getItem("doctorId"),
-          senderName: msg.sender_name || msg.senderName,
-          senderAvatar: msg.sender_avatar || msg.senderAvatar
-        }));
-        
-        formattedMessages.forEach(msg => messageIdsRef.current.add(msg.id));
-        setMessages(formattedMessages);
-        setConversationMessages((prev) => ({
-              ...prev,
-              [conversation.id]: formattedMessages,
-            }));
-        if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-          wsRef.current.send(JSON.stringify({
-            type: "message.read",
-            payload: {
-              conversation_id: conversation.id
-            }
-          }));
-        }
+          isSentByMe:   payload.sender_id === localStorage.getItem("id"),
+          isPending:    false,
+          isRead:       false,
+          senderAvatar: "/default-avatar.png",
+        };
+
+        const convId = payload.conversation_id ?? payload.conv_id;
+
+        setMessages((prev) => {
+          // Replace optimistic pending message if it exists, otherwise append
+          const pendingIdx = prev.findIndex((m) => m.isPending && m.isSentByMe);
+          if (pendingIdx !== -1 && msg.isSentByMe) {
+            const updated = [...prev];
+            updated[pendingIdx] = msg;
+            return updated;
+          }
+          // Avoid duplicates from polling fallback
+          if (prev.some((m) => m.id === msg.id)) return prev;
+          return [...prev, msg];
+        });
+
+        // Update left-panel last message preview
+        setConversations((prev) =>
+          prev.map((conv) =>
+            conv.id === convId
+              ? { ...conv, lastMessage: msg.text, lastMessageTime: msg.timestamp }
+              : conv
+          )
+        );
       }
-      
-      setPatientProfile({
-        name: conversation.name,
-        picture: conversation.avatar,
-        nextAppointment: { date: "", time: "" },
-        documents: []
-      });
-      
-    } catch (error) {
-      console.error("Error fetching conversation:", error);
-      setMessages(conversationMessages[conversation.id] || []);
+
+      if (type === "error") {
+        console.error("WS error from server:", payload);
+      }
+    };
+
+    ws.onerror = (err) => {
+      console.error("WS error:", err);
+      setIsConnected(false);
+    };
+
+    ws.onclose = (e) => {
+      console.log("WS closed:", e.code, e.reason);
+      setIsConnected(false);
+      stopPing();
+      // Auto-reconnect after 3 s unless it was a clean close
+      if (e.code !== 1000) {
+        reconnectTimeoutRef.current = setTimeout(connectWS, 3000);
+      }
+    };
+  };
+
+  const closeWS = () => {
+    stopPing();
+    if (reconnectTimeoutRef.current) {
+      clearTimeout(reconnectTimeoutRef.current);
+      reconnectTimeoutRef.current = null;
+    }
+    if (wsRef.current) {
+      wsRef.current.onclose = null; // prevent auto-reconnect on intentional close
+      wsRef.current.close(1000, "cleanup");
+      wsRef.current = null;
     }
   };
 
- const fetchConversations = async () => {
-  try {
-    setLoading(true);
-    const data = await getChatContacts();
-    console.log("Raw conversations data:", data);
-    
-    // Handle different response structures
-    let conversationsArray = [];
-    if (data && data.data && Array.isArray(data.data)) {
-      conversationsArray = data.data;
-    } else if (data && Array.isArray(data)) {
-      conversationsArray = data;
-    } else if (data && data.conversations && Array.isArray(data.conversations)) {
-      conversationsArray = data.conversations;
-    } else {
-      conversationsArray = [];
-    }
-    
-    console.log("Conversations array:", conversationsArray);
-    
-    if (conversationsArray.length > 0) {
-      const formattedConversations = conversationsArray.map((conv) => ({
-        id: conv.id,
-        name: conv.name || conv.patient_name || conv.username || "Unknown Patient",
-        avatar: conv.avatar || conv.patient_avatar || conv.user?.picture || "",
-        lastMessage: conv.last_message || conv.latest_message || conv.lastMessage || "No messages yet",
-        lastMessageTime: conv.last_message_time || conv.updated_at || conv.created_at
-          ? new Date(conv.last_message_time || conv.updated_at || conv.created_at).toLocaleTimeString([], { 
-              hour: "2-digit", minute: "2-digit" 
-            })
-          : new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-        unreadCount: conv.unread_count || 0,
-        isOnline: conv.is_online || false,
-        isMock: false
-      }));
-      
-      console.log("Formatted conversations:", formattedConversations);
-      
-      // Show all conversations (no filtering)
-      if (formattedConversations.length > 0) {
-        setConversations(formattedConversations);
-      } else {
-        setConversations([{ ...MOCK_CONVERSATION, isMock: true }]);
-      }
-    } else {
-      setConversations([{ ...MOCK_CONVERSATION, isMock: true }]);
-    }
-    
-  } catch (error) {
-    console.error("Failed to fetch conversations:", error);
-    setConversations([{ ...MOCK_CONVERSATION, isMock: true }]);
-  } finally {
-    setLoading(false);
-  }
-};
+  // Connect on mount, disconnect on unmount
+  useEffect(() => {
+    connectWS();
+    return () => closeWS();
+  }, []);
 
+  // ── Select conversation ───────────────────────────────────────────────────
+  const handleConversationClick = async (conversation) => {
+    currentConvIdRef.current = conversation.id;
+
+    setSelectedConversation(conversation);
+    setMsgPage(1);
+    setMessages([]);
+
+    if (conversation.isMock) {
+      setMessages(MOCK_MESSAGES);
+      setPatientProfile(MOCK_PATIENT_PROFILE);
+      return;
+    }
+
+    setPatientProfile({
+      name:            conversation.name,
+      picture:         conversation.avatar,
+      nextAppointment: { date: "", time: "" },
+      documents:       [],
+    });
+
+    await fetchMessages(conversation.id, 1, false);
+  };
+
+  // ── Rename conversation ───────────────────────────────────────────────────
   const handleRenameConversation = async () => {
-    console.log("handleRenameConversation called");
-    console.log("editingName:", editingName);
-    console.log("selectedConversation:", selectedConversation);
-    
-    if (!editingName.trim() || !selectedConversation) {
-      console.log("Validation failed - no name or no conversation");
-      return;
-    }
-    
-    // Don't try to rename mock conversations
-    if (selectedConversation.isMock) {
-      console.log("Cannot rename mock conversation - updating locally only");
-      setSelectedConversation({
-        ...selectedConversation,
-        name: editingName
-      });
-      setConversations(prevConversations =>
-        prevConversations.map(conv =>
-          conv.id === selectedConversation.id
-            ? { ...conv, name: editingName }
-            : conv
-        )
-      );
-      setIsEditingName(false);
-      setEditingName("");
-      return;
-    }
-    
+    if (!editingName.trim() || !selectedConversation) return;
+
+    const previousName = selectedConversation.name;
+    const newName      = editingName.trim();
+
+    // Optimistic update — apply immediately so the UI feels instant
+    const applyName = (conv) =>
+      conv.id === selectedConversation.id ? { ...conv, name: newName } : conv;
+
+    setSelectedConversation((prev) => ({ ...prev, name: newName }));
+    setConversations((prev) => prev.map(applyName));
+    setIsEditingName(false);
+    setEditingName("");
+
+    // Skip API call for mock conversations
+    if (selectedConversation.isMock) return;
+
     try {
-      console.log("Calling patchConversation with:", selectedConversation.id, editingName);
-      const response = await patchConversation(selectedConversation.id, editingName);
-      console.log("Conversation renamed, response:", response);
-      
-      setSelectedConversation({
-        ...selectedConversation,
-        name: editingName
-      });
-      
-      setConversations(prevConversations =>
-        prevConversations.map(conv =>
-          conv.id === selectedConversation.id
-            ? { ...conv, name: editingName }
-            : conv
-        )
-      );
-      
-      setIsEditingName(false);
-      setEditingName("");
-      
+      await renameConversation(selectedConversation.id, newName);
     } catch (error) {
       console.error("Failed to rename conversation:", error);
+      // Rollback on failure
+      const rollback = (conv) =>
+        conv.id === selectedConversation.id ? { ...conv, name: previousName } : conv;
+      setSelectedConversation((prev) => ({ ...prev, name: previousName }));
+      setConversations((prev) => prev.map(rollback));
       alert("Failed to rename conversation. Please try again.");
     }
   };
 
+  // ── Send message ──────────────────────────────────────────────────────────
   const handleSendMessage = () => {
-    if (!newMessage.trim() || !selectedConversation) return;
+    if (!newMessage.trim() || !selectedConversation || selectedConversation.isMock) return;
 
-    const tempId = Date.now();
-    
-    // Send via WebSocket if connected
-    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN && !selectedConversation.isMock) {
-              const messageToSend = {
-        type: "message.send",
-        payload: {
-          conversation_id: selectedConversation.id,
-          message: newMessage
-        }
-      };
-      
-      console.log("Sending message via WebSocket:", messageToSend);
-      wsRef.current.send(JSON.stringify(messageToSend));
-      
-      // Add temporary message to UI
-      const tempMessage = {
-        id: tempId,
-        text: newMessage,
-        timestamp: new Date().toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-        isSentByMe: true,
-        isPending: true,
-      };
-      
+    const text      = newMessage.trim();
+    const tempId    = `pending_${Date.now()}`;
+    const timestamp = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+    // Show optimistic bubble immediately
+    const tempMessage = {
+      id:          tempId,
+      text,
+      timestamp,
+      isSentByMe:  true,
+      isPending:   true,
+      isRead:      false,
+    };
+
     setMessages((prev) => [...prev, tempMessage]);
+    setConversations((prev) =>
+      prev.map((conv) =>
+        conv.id === selectedConversation.id
+          ? { ...conv, lastMessage: text, lastMessageTime: timestamp }
+          : conv
+      )
+    );
+    setNewMessage("");
 
-      setConversationMessages((prev) => ({
-        ...prev,
-        [selectedConversation.id]: [
-          ...(prev[selectedConversation.id] || []),
-          tempMessage,
-        ],
-      }));
-      setNewMessage("");
-      
-      // Clear typing indicator
-      sendTypingIndicator(false);
-    } else if (selectedConversation.isMock) {
-      // Handle mock conversation
-      const tempMessage = {
-        id: tempId,
-        text: newMessage,
-        timestamp: new Date().toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-        isSentByMe: true,
-        isPending: false,
-      };
-      
-      setMessages((prev) => [...prev, tempMessage]);
-      setNewMessage("");
-      console.log("Message sent to mock conversation");
-    } else {
-      console.log("WebSocket not connected, cannot send message");
-      alert("Connection lost. Please refresh the page.");
-    }
+    // Send via WebSocket — server will respond with message.sent to confirm
+    wsSend({
+      type:    "message.send",
+      payload: {
+        conversation_id: selectedConversation.id,
+        message:         text,
+      },
+    });
   };
 
-  // Handle file upload
+  // ── File upload ───────────────────────────────────────────────────────────
   const handleFileUpload = async (e) => {
     const files = Array.from(e.target.files);
     if (files.length === 0) return;
-    
-    console.log("Files selected:", files);
-    
+
     for (const file of files) {
-      // Check file size (max 10MB)
       if (file.size > 10 * 1024 * 1024) {
-        alert(`File ${file.name} is too large. Maximum size is 10MB.`);
+        alert(`File ${file.name} is too large. Maximum size is 10 MB.`);
         continue;
       }
-      
-      // Create a temporary message for the file
-      const fileMessage = {
-        id: Date.now(),
-        text: `📎 ${file.name} (${(file.size / 1024).toFixed(2)} KB)`,
-        timestamp: new Date().toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-        isSentByMe: true,
-        isPending: true,
-        isFile: true,
-        fileName: file.name,
-        fileSize: file.size,
-        fileType: file.type
-      };
-      
-      // Add to messages immediately
-      setMessages((prev) => [...prev, fileMessage]);
-      
-      // Simulate upload
+
+      const fileId = `temp_file_${Date.now()}_${Math.random()}`;
+      const sizeLabel = `${(file.size / 1024).toFixed(2)} KB`;
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: fileId,
+          text: `📎 ${file.name} (${sizeLabel})`,
+          timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+          isSentByMe: true,
+          isPending: true,
+          isFile: true,
+        },
+      ]);
+
       setTimeout(() => {
         setMessages((prev) =>
           prev.map((msg) =>
-            msg.id === fileMessage.id
-              ? { ...msg, isPending: false, text: `✅ ${file.name} (${(file.size / 1024).toFixed(2)} KB)` }
+            msg.id === fileId
+              ? { ...msg, isPending: false, text: `✅ ${file.name} (${sizeLabel})` }
               : msg
           )
         );
       }, 2000);
     }
-    
-    // Reset file input
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
+
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  const handleSearch = (e) => {
-    setSearchQuery(e.target.value);
-  };
-
+  // ── Documents ─────────────────────────────────────────────────────────────
   const handleDownloadDocument = (doc) => {
-    console.log("Download document:", doc);
     if (doc.url && doc.url !== "#") {
-      window.open(doc.url, '_blank');
+      window.open(doc.url, "_blank");
     } else {
       alert("Document URL not available");
     }
   };
 
-  const handleViewAllDocuments = () => {
-    console.log("View all documents");
-  };
+  const handleViewAllDocuments = () => console.log("View all documents");
+  const handleOpenPatientFile  = () => console.log("Open patient file for:", patientProfile.name);
 
-  const handleOpenPatientFile = () => {
-    console.log("Open patient file for:", patientProfile.name);
-  };
+  // ── Filtered list ─────────────────────────────────────────────────────────
+  const filteredConversations = useMemo(
+    () =>
+      conversations.filter((conv) =>
+        conv.name?.toLowerCase().includes(searchQuery.toLowerCase())
+      ),
+    [conversations, searchQuery]
+  );
 
-  // Fix #8: Use useMemo for filtered conversations
-  const filteredConversations = useMemo(() => {
-    return conversations.filter(conv =>
-      conv.name?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [conversations, searchQuery]);
-
+  // ─── RENDER ───────────────────────────────────────────────────────────────
   return (
     <div className={styles.chatContainer}>
       <div className={styles.threePane}>
 
-        {/* Left Pane: Conversation List */}
+        {/* ── Left Pane: Conversation List ── */}
         <aside className={styles.convList}>
           <div className={styles.convSearch}>
             <div className={styles.searchWrap}>
               <span className="material-symbols-outlined">search</span>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 placeholder="Search patients..."
                 value={searchQuery}
-                onChange={handleSearch}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
           </div>
 
           <div className={styles.convScroll}>
-            {loading && <div className={styles.loading}>Loading conversations...</div>}
-            
-            {/* WebSocket connection status indicator */}
+            {/* WebSocket Connection Status - Green when connected */}
             {selectedConversation && !selectedConversation.isMock && (
               <div className={`${styles.connectionStatus} ${isConnected ? styles.connected : styles.disconnected}`}>
                 <span className={styles.statusDotSmall}></span>
                 <span>{isConnected ? "Connected (Secure)" : "Connecting to secure chat..."}</span>
               </div>
             )}
-            
+
+            {loading && page === 1 && (
+              <div className={styles.loading}>Loading conversations...</div>
+            )}
+
             {filteredConversations.map((conversation) => (
-              <div 
+              <div
                 key={conversation.id}
-                className={`${styles.convItem} ${selectedConversation?.id === conversation.id ? styles.active : ''}`}
+                className={`${styles.convItem} ${
+                  selectedConversation?.id === conversation.id ? styles.active : ""
+                }`}
                 onClick={() => handleConversationClick(conversation)}
               >
                 <div className={styles.convAvatar}>
-                  <img alt={conversation.name} src={conversation.avatar || "/default-avatar.png"}/>
-                  {conversation.isOnline && <div className={styles.onlineDot}></div>}
+                  <img
+                    alt={conversation.name}
+                    src={conversation.avatar || "/default-avatar.png"}
+                  />
+                  {conversation.isOnline === true  && <div className={styles.onlineDot}></div>}
                   {conversation.isOnline === false && <div className={styles.offlineDot}></div>}
                   {conversation.unreadCount > 0 && (
                     <div className={styles.unreadBadge}>{conversation.unreadCount}</div>
@@ -690,20 +603,33 @@ console.log("FULL CONVERSATION:", conversation);
                     <span className={styles.convName}>{conversation.name}</span>
                     <span className={styles.convTime}>{conversation.lastMessageTime}</span>
                   </div>
-                  <p className={`${styles.convPreview} ${conversation.isTyping ? styles.typing : ''}`}>
-                    {conversation.isTyping ? "Typing..." : conversation.lastMessage}
-                  </p>
+                  <p className={styles.convPreview}>{conversation.lastMessage}</p>
                 </div>
               </div>
             ))}
-            
+
             {!loading && filteredConversations.length === 0 && (
               <div className={styles.noResults}>No conversations found</div>
+            )}
+
+            {/* Load more button */}
+            {hasMore && !loading && (
+              <button
+                className={styles.loadMoreBtn}
+                onClick={() => setPage((p) => p + 1)}
+              >
+                Load more
+              </button>
+            )}
+
+            {/* Loading spinner for subsequent pages */}
+            {loading && page > 1 && (
+              <div className={styles.loading}>Loading more...</div>
             )}
           </div>
         </aside>
 
-        {/* Center Pane: Chat Window */}
+        {/* ── Center Pane: Chat Window ── */}
         <main className={styles.chatMain}>
           {selectedConversation ? (
             <>
@@ -721,7 +647,7 @@ console.log("FULL CONVERSATION:", conversation);
                           value={editingName}
                           onChange={(e) => setEditingName(e.target.value)}
                           onKeyDown={(e) => {
-                            if (e.key === "Enter") handleRenameConversation();
+                            if (e.key === "Enter")  handleRenameConversation();
                             if (e.key === "Escape") setIsEditingName(false);
                           }}
                           className={styles.editNameInput}
@@ -737,12 +663,11 @@ console.log("FULL CONVERSATION:", conversation);
                     ) : (
                       <div className={styles.chatNameWrapper}>
                         <h2 className={styles.chatName}>{selectedConversation.name}</h2>
-                        <button 
+                        <button
                           onClick={() => {
-                            console.log("Edit icon clicked");
                             setEditingName(selectedConversation.name);
                             setIsEditingName(true);
-                          }} 
+                          }}
                           className={styles.editNameIcon}
                           title="Rename conversation"
                           type="button"
@@ -777,6 +702,27 @@ console.log("FULL CONVERSATION:", conversation);
                   </div>
                 </div>
 
+                {/* Load older messages */}
+                {hasMoreMessages && !loadingMessages && (
+                  <div className={styles.loadOlderWrap}>
+                    <button
+                      className={styles.loadOlderBtn}
+                      onClick={() => {
+                        const nextPage = msgPage + 1;
+                        setMsgPage(nextPage);
+                        fetchMessages(selectedConversation.id, nextPage, true);
+                      }}
+                    >
+                      Load older messages
+                    </button>
+                  </div>
+                )}
+                {loadingMessages && (
+                  <div className={styles.loadOlderWrap}>
+                    <span className={styles.loadingMsgs}>Loading messages...</span>
+                  </div>
+                )}
+
                 {messages.length === 0 && (
                   <div className={styles.welcomeMessage}>
                     <span className="material-symbols-outlined">chat</span>
@@ -785,24 +731,24 @@ console.log("FULL CONVERSATION:", conversation);
                   </div>
                 )}
 
-                {messages.map((message) => (
+                {messages.map((message) =>
                   message.isSentByMe ? (
                     <div key={message.id} className={styles.msgOut}>
                       <div className={styles.msgOutBody}>
-                        <div className={`${styles.bubbleOut} ${message.isFile ? styles.fileBubble : ''}`}>
+                        <div className={`${styles.bubbleOut} ${message.isFile ? styles.fileBubble : ""}`}>
                           <p>{message.text}</p>
                         </div>
                         <div className={styles.msgOutMeta}>
-                          <span className={styles.msgTime}>
-                            {message.timestamp}
-                          </span>
+                          <span className={styles.msgTime}>{message.timestamp}</span>
                           <span
                             className="material-symbols-outlined"
-                            style={{
-                              fontVariationSettings: "'FILL' 1",
-                            }}
+                            style={{ fontVariationSettings: "'FILL' 1" }}
                           >
-                            {message.isPending ? "schedule" : "check_circle"}
+                            {message.isPending
+                              ? "schedule"
+                              : message.isRead
+                              ? "done_all"
+                              : "check_circle"}
                           </span>
                         </div>
                       </div>
@@ -812,22 +758,17 @@ console.log("FULL CONVERSATION:", conversation);
                       <img
                         className={styles.msgInAvatar}
                         alt={message.senderName}
-                        src={
-                          message.senderAvatar ||
-                          "/default-avatar.png"
-                        }
+                        src={message.senderAvatar || "/default-avatar.png"}
                       />
                       <div className={styles.msgInBody}>
-                        <div className={`${styles.bubbleIn} ${message.isFile ? styles.fileBubble : ''}`}>
+                        <div className={`${styles.bubbleIn} ${message.isFile ? styles.fileBubble : ""}`}>
                           <p>{message.text}</p>
                         </div>
-                        <span className={styles.msgTime}>
-                          {message.timestamp}
-                        </span>
+                        <span className={styles.msgTime}>{message.timestamp}</span>
                       </div>
                     </div>
                   )
-                ))}
+                )}
 
                 <div ref={messagesEndRef}></div>
               </div>
@@ -835,27 +776,28 @@ console.log("FULL CONVERSATION:", conversation);
               {/* Input Console */}
               <div className={styles.inputConsole}>
                 <div className={styles.inputWrap}>
-                  <button className={styles.inputAttach} onClick={() => fileInputRef.current?.click()}>
+                  <button
+                    className={styles.inputAttach}
+                    onClick={() => fileInputRef.current?.click()}
+                  >
                     <span className="material-symbols-outlined">add</span>
-                    <input 
-                      type="file" 
+                    <input
+                      type="file"
                       ref={fileInputRef}
-                      hidden 
+                      hidden
                       onChange={handleFileUpload}
                       multiple
                       accept="image/*,.pdf,.doc,.docx,.txt"
                     />
                   </button>
-                  <input 
-                    className={styles.msgInput} 
-                    type="text" 
+                  <input
+                    className={styles.msgInput}
+                    type="text"
                     placeholder="Type a secure message..."
                     value={newMessage}
                     onChange={handleInputChange}
                     onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        handleSendMessage();
-                      }
+                      if (e.key === "Enter") handleSendMessage();
                     }}
                   />
                   <div className={styles.inputActions}>
@@ -875,13 +817,19 @@ console.log("FULL CONVERSATION:", conversation);
           )}
         </main>
 
-        {/* Right Pane: Patient Context Sidebar */}
+        {/* ── Right Pane: Patient Context Sidebar ── */}
         <aside className={styles.patientSidebar}>
           {selectedConversation ? (
             <>
               <div className={styles.patientProfile}>
-                <img className={styles.patientProfilePic} alt={patientProfile.name} src={patientProfile.picture || "/default-avatar.png"}/>
-                <h3 className={styles.patientName}>{patientProfile.name || selectedConversation.name}</h3>
+                <img
+                  className={styles.patientProfilePic}
+                  alt={patientProfile.name}
+                  src={patientProfile.picture || "/default-avatar.png"}
+                />
+                <h3 className={styles.patientName}>
+                  {patientProfile.name || selectedConversation.name}
+                </h3>
               </div>
 
               <div className={styles.patientDetails}>
@@ -896,7 +844,8 @@ console.log("FULL CONVERSATION:", conversation);
                         <p className={styles.apptTitle}>Next Appointment</p>
                         {patientProfile.nextAppointment?.date && patientProfile.nextAppointment?.time ? (
                           <p className={styles.apptDate}>
-                            {patientProfile.nextAppointment.date} • {patientProfile.nextAppointment.time}
+                            {patientProfile.nextAppointment.date} •{" "}
+                            {patientProfile.nextAppointment.time}
                           </p>
                         ) : (
                           <p className={styles.noEvents}>No upcoming events</p>
@@ -909,23 +858,39 @@ console.log("FULL CONVERSATION:", conversation);
 
                 <section>
                   <div className={styles.detailSectionHeader}>
-                    <p className={styles.detailSectionTitle} style={{ marginBottom: 0 }}>Shared Documents</p>
-                    <span className={styles.viewAll} onClick={handleViewAllDocuments}>View All</span>
+                    <p className={styles.detailSectionTitle} style={{ marginBottom: 0 }}>
+                      Shared Documents
+                    </p>
+                    <span className={styles.viewAll} onClick={handleViewAllDocuments}>
+                      View All
+                    </span>
                   </div>
                   <div className={styles.docList}>
                     {patientProfile.documents && patientProfile.documents.length > 0 ? (
                       patientProfile.documents.map((doc, index) => (
-                        <div key={index} className={styles.docItem} onClick={() => handleDownloadDocument(doc)}>
-                          <div className={`${styles.docIcon} ${doc.type === 'pdf' ? styles.docIconPdf : styles.docIconImg}`}>
+                        <div
+                          key={index}
+                          className={styles.docItem}
+                          onClick={() => handleDownloadDocument(doc)}
+                        >
+                          <div
+                            className={`${styles.docIcon} ${
+                              doc.type === "pdf" ? styles.docIconPdf : styles.docIconImg
+                            }`}
+                          >
                             <span className="material-symbols-outlined">
-                              {doc.type === 'pdf' ? 'picture_as_pdf' : 'image'}
+                              {doc.type === "pdf" ? "picture_as_pdf" : "image"}
                             </span>
                           </div>
                           <div className={styles.docMeta}>
                             <p className={styles.docName}>{doc.name}</p>
-                            <p className={styles.docSize}>{doc.size} • {doc.date}</p>
+                            <p className={styles.docSize}>
+                              {doc.size} • {doc.date}
+                            </p>
                           </div>
-                          <span className={`material-symbols-outlined ${styles.docDl}`}>download</span>
+                          <span className={`material-symbols-outlined ${styles.docDl}`}>
+                            download
+                          </span>
                         </div>
                       ))
                     ) : (
@@ -952,7 +917,6 @@ console.log("FULL CONVERSATION:", conversation);
             </div>
           )}
         </aside>
-
       </div>
     </div>
   );
