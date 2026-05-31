@@ -1403,4 +1403,47 @@
     opacity: 1;
     transform: scale(1);
   }
+}.loadingText {
+  color: #666;
+  font-size: 12px;
+  margin: 8px 0;
+}
+
+.loadingDocuments {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  color: #999;
+}
+
+.loadingDocuments span {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.loadingDocuments p {
+  font-size: 12px;
+  margin: 0;
+}
+
+.moreDocuments {
+  padding: 8px 12px;
+  text-align: center;
+  color: #0066b3;
+  font-size: 12px;
+  cursor: pointer;
+  border-top: 1px solid #e5e7eb;
+  margin-top: 4px;
+}
+
+.moreDocuments:hover {
+  background-color: #f9fafb;
+}
+
+.apptType {
+  font-size: 11px;
+  color: #6b7280;
+  margin-top: 2px;
 }

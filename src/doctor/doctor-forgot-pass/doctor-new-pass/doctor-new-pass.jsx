@@ -4,11 +4,13 @@ import styles from "./doctor-new-pass.module.css";
 import { Link, useNavigate } from "react-router";
 import { useAuth } from "../../contexts/authContext";
 import { TailSpin } from "react-loader-spinner";
+
 export default function DoctorNewPass({ setStep }) {
   const { updatePassword } = useAuth();
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
   const [coPassword, setCoPassword] = useState("");
+
   return (
     <>
       <div className={styles.mainContainer}>
@@ -28,7 +30,7 @@ export default function DoctorNewPass({ setStep }) {
                   <span className={styles.descIcons}>medical_services</span>
                 </div>
                 <div>
-                  <h4 className={styles.descHead}>Multi-facor ready</h4>
+                  <h4 className={styles.descHead}>Multi-factor ready</h4>
                   <p className={styles.descPara}>
                     Your password is the first layer of defense.
                   </p>
@@ -51,10 +53,8 @@ export default function DoctorNewPass({ setStep }) {
             <img
               className={styles.image}
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuB1iWVJeuPhCser31_G6psi7CAVzav1ciGmrD6kri4TgMi226hiK_hnHij5qnqeoKmtNTvX8ijQGAB5jyuqHdCZao2wPrq1ZtT0wsIgB16p6S4VPHBVbdzLjFDUjU6EAkgxYRVb8-Ar5Rc5-075K962CjFXUNDw_uFQytaMP4AIVIStIFpRDUFK-RebGJ21z3Baa8dTSBgGHs1SaCxNwPMeaO6RpALqObbVSBq9rf8UenSHlrDFtIYr2jIEove2IO_nKyB_Jp0UkLyV"
-            ></img>
-            <div className={styles.symbol}>
-              <span className={styles.symbolIcon}>shield</span>
-            </div>
+              alt="Medical"
+            />
           </div>
         </div>
         <div className={styles.rightSide}>
@@ -66,8 +66,7 @@ export default function DoctorNewPass({ setStep }) {
             <div className={styles.call}>
               <h1 className={styles.callHeader}>Create New Password</h1>
               <p className={styles.callPara}>
-                Please enter a new password to secure your Mediora medical
-                account.
+                Please enter a new password to secure your Mediora medical account.
               </p>
             </div>
             <form className={styles.form}>
@@ -84,7 +83,7 @@ export default function DoctorNewPass({ setStep }) {
                     className={styles.input}
                     id="new_password"
                     type="password"
-                    placeholder="Min.8 characters"
+                    placeholder="Min. 8 characters"
                   />
                 </div>
                 <div className={styles.strengthContain}>
@@ -117,7 +116,7 @@ export default function DoctorNewPass({ setStep }) {
               </div>
               {updatePassword.isError && (
                 <span className={`${styles.existNot} ${styles.errorText}`}>
-                  An error occured,try again.
+                  An error occurred, try again.
                 </span>
               )}
               <div className={styles.buttons}>
@@ -131,7 +130,7 @@ export default function DoctorNewPass({ setStep }) {
                           setStep(1);
                           navigate("/signin");
                         },
-                      },
+                      }
                     );
                   }}
                   className={styles.upButt}
@@ -143,7 +142,7 @@ export default function DoctorNewPass({ setStep }) {
                   }
                 >
                   {updatePassword.isPending ? (
-                    <TailSpin height="20" width="20" color="#215eed"></TailSpin>
+                    <TailSpin height="20" width="20" color="#215eed" />
                   ) : !conditionsVerify(password) || password !== coPassword ? (
                     "Please check the Requirements"
                   ) : (
@@ -153,7 +152,7 @@ export default function DoctorNewPass({ setStep }) {
                     <span className={styles.buttIcon}>arrow_forward</span>
                   )}
                 </button>
-                <div className={styles.a} href="#">
+                <div className={styles.a}>
                   <span className={styles.aIcon}>arrow_back</span>
                   <Link className={styles.noUnder} to="/signin">
                     Back to Login

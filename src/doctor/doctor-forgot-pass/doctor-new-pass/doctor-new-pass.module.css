@@ -124,6 +124,8 @@ body {
   position: relative;
   margin-top: auto;
   padding-top: 2.5rem;
+  margin-left: -2.4rem;
+  margin-right: -1rem;
 }
 .image {
   border-radius: 0.75rem;
